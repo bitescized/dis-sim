@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sodium Carbonate Dissolution</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js"></script>
+    <style>
+      body { margin: 0; padding: 0; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <script>
+      let particles = [];
+
+      function setup() {
+        createCanvas(600, 400);
+        noStroke();
+        fill(255);
+        textSize(16);
+      }
+
+      function draw() {
+        background(200);
+        fill(0);
+        text("Click to add Na₂CO₃", 10, 20);
+
+        for (let p of particles) {
+          p.update();
+          p.display();
+        }
+      }
+
+      function mousePressed() {
+        // Add two Na⁺ ions
+        particles.push(new Ion('Na⁺', color(0, 0, 255)));
+        particles.push(new Ion('Na⁺', color(0, 0, 255)));
+        // Add one CO₃²⁻ ion
+        particles.push(new Ion('CO₃²⁻', color(255, 0, 0)));
+      }
+
+      class Ion {
+        constructor(label, col) {
+          this.x = random(width);
+          this.y = random(height);
+          this.vx = random(-1, 1);
+          this.vy = random(-1, 1);
+          this.label = label;
+          this.col = col;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+
+          // Bounce off walls
+          if (this.x < 0 || this.x > width) this.vx *= -1;
+          if (this.y < 0 || this.y > height) this.vy *= -1;
+        }
+
+        display() {
+          fill(this.col);
+          ellipse(this.x, this.y, 30, 30);
+          fill(255);
+          textAlign(CENTER, CENTER);
+          text(this.label, this.x, this.y);
+        }
+      }
+    </script>
+  </body>
+</html>
