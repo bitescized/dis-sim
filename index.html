@@ -176,7 +176,8 @@
       }
     }
 
-   function drawGlucoseMolecule(ctx, originX, originY) {
+  function drawGlucoseMolecule(ctx, originX, originY) {
+  const scale = 0.6; // reduce spacing to bunch atoms closer
   const atoms = [
     // Ring (C1–C5 and O)
     { dx: 0, dy: 0, size: 10, color: 'gray' },
@@ -208,7 +209,7 @@
 
   atoms.forEach(atom => {
     ctx.beginPath();
-    ctx.arc(originX + atom.dx, originY + atom.dy, atom.size, 0, Math.PI * 2);
+    ctx.arc(originX + atom.dx * scale, originY + atom.dy * scale, atom.size, 0, Math.PI * 2);
     ctx.fillStyle = atom.color;
     ctx.fill();
     ctx.stroke();
