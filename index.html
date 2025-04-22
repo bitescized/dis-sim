@@ -62,60 +62,16 @@ Dissociation with the right drawings?
   <h1>Substance in Water</h1>
   <p class="instructions">Drag the solid compound into the water box to dissolve it.</p>
 
-  <select id="compoundSelect">
-    <option value="Na2CO3">Sodium Carbonate (Na₂CO₃)</option>
-    <option value="NaCl">Sodium Chloride (NaCl)</option>
-    <option value="CaCl2">Calcium Chloride (CaCl₂)</option>
-    <option value="CaCO3">Calcium Carbonate (CaCO₃)</option>
-    <option value="MgSO4">Magnesium Sulfate (MgSO₄)</option>
-    <option value="MgCl2">Magnesium Chloride (MgCl₂)</option>
-    <option value="Glucose">Glucose (C₆H₁₂O₆)</option>
+<select id="compoundSelect">
+  <option value="Na2CO3">Sodium Carbonate (Na₂CO₃)</option>
+  <option value="NaCl">Sodium Chloride (NaCl)</option>
+  <option value="CaCl2">Calcium Chloride (CaCl₂)</option>
+  <option value="CaCO3">Calcium Carbonate (CaCO₃)</option>
+  <option value="MgSO4">Magnesium Sulfate (MgSO₄)</option>
+  <option value="MgCl2">Magnesium Chloride (MgCl₂)</option>
+  <option value="Glucose">Glucose (C₆H₁₂O₆)</option>
+</select>
 
-    function drawGlucoseMolecule(ctx, originX, originY) {
-  const scale = 0.6;
-
-  const backOxygens = [ // drawn first
-    { dx: -10, dy: -10, size: 10, color: 'red' }, // OH on C1
-    { dx: 40, dy: -10, size: 10, color: 'red' },  // OH on C2
-    { dx: 20, dy: 60, size: 10, color: 'red' }    // OH on C5
-  ];
-
-  const hydrogens = [
-    { dx: 20, dy: -10, size: 6, color: 'white' },
-    { dx: 50, dy: 0, size: 6, color: 'white' },
-    { dx: 50, dy: 50, size: 6, color: 'white' },
-    { dx: 40, dy: 60, size: 6, color: 'white' },
-    { dx: 10, dy: 10, size: 6, color: 'white' },
-    { dx: 20, dy: 85, size: 6, color: 'white' }
-  ];
-
-  const carbons = [ // drawn after background O
-    { dx: 0, dy: 0, size: 10, color: 'gray' },
-    { dx: 30, dy: 0, size: 10, color: 'gray' },
-    { dx: 60, dy: 10, size: 10, color: 'gray' },
-    { dx: 60, dy: 40, size: 10, color: 'gray' },
-    { dx: 30, dy: 50, size: 10, color: 'gray' },
-    { dx: 30, dy: 75, size: 10, color: 'gray' } // C6
-  ];
-
-  const frontOxygens = [ // drawn last
-    { dx: 70, dy: 0, size: 10, color: 'red' },  // OH on C3
-    { dx: 70, dy: 50, size: 10, color: 'red' }, // OH on C4
-    { dx: 40, dy: 85, size: 10, color: 'red' }, // OH on C6
-    { dx: 0, dy: 40, size: 10, color: 'red' }   // Ring oxygen
-  ];
-
-  // Draw in order: back O → H → C → front O
-  [...backOxygens, ...hydrogens, ...carbons, ...frontOxygens].forEach(atom => {
-    ctx.beginPath();
-    ctx.arc(originX + atom.dx * scale, originY + atom.dy * scale, atom.size, 0, Math.PI * 2);
-    ctx.fillStyle = atom.color;
-    ctx.fill();
-    ctx.stroke();
-  });
-}
-
-  </select>
   <button onclick="resetSimulation()">Reset</button>
 
   <div class="container">
@@ -241,6 +197,49 @@ Dissociation with the right drawings?
     document.getElementById("solidBoxContainer").addEventListener("dragstart", (e) => {
       e.dataTransfer.setData("text/plain", "drop-allowed");
     });
+
+    function drawGlucoseMolecule(ctx, originX, originY) {
+  const scale = 0.6;
+
+  const backOxygens = [
+    { dx: -10, dy: -10, size: 10, color: 'red' },
+    { dx: 40, dy: -10, size: 10, color: 'red' },
+    { dx: 20, dy: 60, size: 10, color: 'red' }
+  ];
+
+  const hydrogens = [
+    { dx: 20, dy: -10, size: 6, color: 'white' },
+    { dx: 50, dy: 0, size: 6, color: 'white' },
+    { dx: 50, dy: 50, size: 6, color: 'white' },
+    { dx: 40, dy: 60, size: 6, color: 'white' },
+    { dx: 10, dy: 10, size: 6, color: 'white' },
+    { dx: 20, dy: 85, size: 6, color: 'white' }
+  ];
+
+  const carbons = [
+    { dx: 0, dy: 0, size: 10, color: 'gray' },
+    { dx: 30, dy: 0, size: 10, color: 'gray' },
+    { dx: 60, dy: 10, size: 10, color: 'gray' },
+    { dx: 60, dy: 40, size: 10, color: 'gray' },
+    { dx: 30, dy: 50, size: 10, color: 'gray' },
+    { dx: 30, dy: 75, size: 10, color: 'gray' }
+  ];
+
+  const frontOxygens = [
+    { dx: 70, dy: 0, size: 10, color: 'red' },
+    { dx: 70, dy: 50, size: 10, color: 'red' },
+    { dx: 40, dy: 85, size: 10, color: 'red' },
+    { dx: 0, dy: 40, size: 10, color: 'red' }
+  ];
+
+  [...backOxygens, ...hydrogens, ...carbons, ...frontOxygens].forEach(atom => {
+    ctx.beginPath();
+    ctx.arc(originX + atom.dx * scale, originY + atom.dy * scale, atom.size, 0, Math.PI * 2);
+    ctx.fillStyle = atom.color;
+    ctx.fill();
+    ctx.stroke();
+  });
+}
 
     function handleDrop(event) {
       event.preventDefault();
