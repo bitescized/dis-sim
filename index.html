@@ -80,13 +80,16 @@
       new Ion('CO₃²⁻', 0, 0, '#4db6ac')
     ];
 
-    function dissolve() {
-      dissolvedIons.forEach(ion => {
-        ion.vx = Math.random() * 4 - 2;
-        ion.vy = Math.random() * 4 - 2;
-        ion.moving = true;
-      });
-    }
+function dissolve() {
+  dissolvedIons.forEach(ion => {
+    ion.x = Math.random() * (dissolvedCanvas.width - 40) + 20;
+    ion.y = Math.random() * (dissolvedCanvas.height - 40) + 20;
+    ion.vx = Math.random() * 4 - 2;
+    ion.vy = Math.random() * 4 - 2;
+    ion.moving = true;
+  });
+}
+
 
     function animate() {
       solidCtx.clearRect(0, 0, solidCanvas.width, solidCanvas.height);
