@@ -1,13 +1,21 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exploring Salts</title>
+  <title>Ionic Compound Dissolution</title>
   <style>
     body { text-align: center; font-family: sans-serif; background: #e0f7fa; }
     .container { display: flex; justify-content: space-around; }
-    .box { width: 250px; height: 300px; border: 2px solid #0288d1; background-color: #ffffff; margin: 20px; position: relative; }
+    .box {
+      width: 250px;
+      height: 300px;
+      border: 2px solid #0288d1;
+      background-color: #ffffff;
+      margin: 20px;
+      position: relative;
+      transition: opacity 0.8s ease, border-color 0.3s ease;
+    }
     canvas { background: white; }
     select, button {
       margin: 10px;
@@ -19,26 +27,41 @@ l<!DOCTYPE html>
     button {
       background: #0288d1; color: white; cursor: pointer;
     }
-    .label { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-weight: bold; }
+    .label {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-weight: bold;
+    }
+    .highlight {
+      border-color: #00c853 !important;
+    }
   </style>
 </head>
 <body>
-  <h1>Compound in Water</h1>
+  <h1>Ionic Compound Dissolving in Water</h1>
   <select id="compoundSelect">
     <option value="Na2CO3">Sodium Carbonate (Na₂CO₃)</option>
     <option value="NaCl">Sodium Chloride (NaCl)</option>
     <option value="CaCl2">Calcium Chloride (CaCl₂)</option>
     <option value="CaCO3">Calcium Carbonate (CaCO₃)</option>
   </select>
-  <button onclick="dissolve()">Add to Water</button>
   <button onclick="resetSimulation()">Reset</button>
 
   <div class="container">
-    <div class="box">
-      <div class="label">Compound as a Solid</div>
+    <!-- Drag this -->
+    <div class="box" id="solidBoxContainer" draggable="true">
+      <div class="label">Solid Compound</div>
       <canvas id="solidBox" width="250" height="300"></canvas>
     </div>
-    <div class="box">
+
+    <!-- Drop here -->
+    <div class="box" id="dissolvedBoxContainer"
+         ondragover="event.preventDefault()"
+         ondragenter="this.classList.add('highlight')"
+         ondragleave="this.classList.remove('highlight')"
+         ondrop="handleDrop(event)">
       <div class="label">Dissolved Ions</div>
       <canvas id="dissolvedBox" width="250" height="300"></canvas>
     </div>
@@ -113,53 +136,66 @@ l<!DOCTYPE html>
     let dissolved = false;
 
     document.getElementById("compoundSelect").addEventListener("change", () => {
-      resetSimulation();  // clear old ions when switching
+      resetSimulation();
       updateSolidDisplay();
     });
 
+    document.getElementById("solidBoxContainer").addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", "drop-allowed");
+    });
+
+    function handleDrop(event) {
+      event.preventDefault();
+      event.currentTarget.classList.remove("highlight");
+
+      if (!dissolved) {
+        dissolve();
+        document.getElementById("solidBoxContainer").style.opacity = "0.3";
+      }
+    }
+
     function updateSolidDisplay() {
-  const compound = document.getElementById("compoundSelect").value;
-  solidIons = [];
+      const compound = document.getElementById("compoundSelect").value;
+      solidIons = [];
 
-  if (compound === "Na2CO3") {
-    solidIons = [
-      new Ion('Na⁺', 60, 110, '#fdd835'),
-      new Ion('Na⁺', 90, 110, '#fdd835'),
-      new Ion('CO₃²⁻', 75, 140, '#4db6ac'),
-      new Ion('Na⁺', 130, 110, '#fdd835'),
-      new Ion('Na⁺', 160, 110, '#fdd835'),
-      new Ion('CO₃²⁻', 145, 140, '#4db6ac')
-    ];
-  } else if (compound === "NaCl") {
-    solidIons = [
-      new Ion('Na⁺', 70, 110, '#fdd835'),
-      new Ion('Cl⁻', 100, 110, '#90caf9'),
-      new Ion('Na⁺', 130, 110, '#fdd835'),
-      new Ion('Cl⁻', 160, 110, '#90caf9'),
-      new Ion('Na⁺', 70, 160, '#fdd835'),
-      new Ion('Cl⁻', 100, 160, '#90caf9'),
-      new Ion('Na⁺', 130, 160, '#fdd835'),
-      new Ion('Cl⁻', 160, 160, '#90caf9')
-    ];
-  } else if (compound === "CaCl2") {
-    solidIons = [
-      new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
-      new Ion('Cl⁻', 70, 140, '#90caf9'),
-      new Ion('Cl⁻', 130, 140, '#90caf9'),
-      new Ion('Ca²⁺', 100, 180, '#a5d6a7'),
-      new Ion('Cl⁻', 70, 210, '#90caf9'),
-      new Ion('Cl⁻', 130, 210, '#90caf9')
-    ];
-  } else if (compound === "CaCO3") {
-    solidIons = [
-      new Ion('Ca²⁺', 80, 130, '#a5d6a7'),
-      new Ion('CO₃²⁻', 120, 150, '#4db6ac'),
-      new Ion('Ca²⁺', 160, 130, '#a5d6a7'),
-      new Ion('CO₃²⁻', 200, 150, '#4db6ac')
-    ];
-  }
-}
-
+      if (compound === "Na2CO3") {
+        solidIons = [
+          new Ion('Na⁺', 60, 110, '#fdd835'),
+          new Ion('Na⁺', 90, 110, '#fdd835'),
+          new Ion('CO₃²⁻', 75, 140, '#4db6ac'),
+          new Ion('Na⁺', 130, 110, '#fdd835'),
+          new Ion('Na⁺', 160, 110, '#fdd835'),
+          new Ion('CO₃²⁻', 145, 140, '#4db6ac')
+        ];
+      } else if (compound === "NaCl") {
+        solidIons = [
+          new Ion('Na⁺', 70, 110, '#fdd835'),
+          new Ion('Cl⁻', 100, 110, '#90caf9'),
+          new Ion('Na⁺', 130, 110, '#fdd835'),
+          new Ion('Cl⁻', 160, 110, '#90caf9'),
+          new Ion('Na⁺', 70, 160, '#fdd835'),
+          new Ion('Cl⁻', 100, 160, '#90caf9'),
+          new Ion('Na⁺', 130, 160, '#fdd835'),
+          new Ion('Cl⁻', 160, 160, '#90caf9')
+        ];
+      } else if (compound === "CaCl2") {
+        solidIons = [
+          new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
+          new Ion('Cl⁻', 70, 140, '#90caf9'),
+          new Ion('Cl⁻', 130, 140, '#90caf9'),
+          new Ion('Ca²⁺', 100, 180, '#a5d6a7'),
+          new Ion('Cl⁻', 70, 210, '#90caf9'),
+          new Ion('Cl⁻', 130, 210, '#90caf9')
+        ];
+      } else if (compound === "CaCO3") {
+        solidIons = [
+          new Ion('Ca²⁺', 80, 130, '#a5d6a7'),
+          new Ion('CO₃²⁻', 120, 150, '#4db6ac'),
+          new Ion('Ca²⁺', 160, 130, '#a5d6a7'),
+          new Ion('CO₃²⁻', 200, 150, '#4db6ac')
+        ];
+      }
+    }
 
     function addIon(label, color, speed) {
       const angle = Math.random() * 2 * Math.PI;
@@ -175,32 +211,32 @@ l<!DOCTYPE html>
       dissolvedIons.push(ion);
     }
 
-function dissolve() {
-  if (dissolved) return;
-  dissolved = true;
+    function dissolve() {
+      if (dissolved) return;
+      dissolved = true;
 
-  const speed = 0.5;
-  const compound = document.getElementById("compoundSelect").value;
+      const speed = 0.5;
+      const compound = document.getElementById("compoundSelect").value;
 
-  if (compound === "Na2CO3") {
-    for (let i = 0; i < 4; i++) addIon("Na⁺", "#fdd835", speed);
-    for (let i = 0; i < 2; i++) addIon("CO₃²⁻", "#4db6ac", speed);
-  } else if (compound === "NaCl") {
-    for (let i = 0; i < 4; i++) addIon("Na⁺", "#fdd835", speed);
-    for (let i = 0; i < 4; i++) addIon("Cl⁻", "#90caf9", speed);
-  } else if (compound === "CaCl2") {
-    for (let i = 0; i < 2; i++) addIon("Ca²⁺", "#a5d6a7", speed);
-    for (let i = 0; i < 4; i++) addIon("Cl⁻", "#90caf9", speed);
-  } else if (compound === "CaCO3") {
-    for (let i = 0; i < 2; i++) addIon("Ca²⁺", "#a5d6a7", speed);
-    for (let i = 0; i < 2; i++) addIon("CO₃²⁻", "#4db6ac", speed);
-  }
-}
-
+      if (compound === "Na2CO3") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", "#fdd835", speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", "#4db6ac", speed);
+      } else if (compound === "NaCl") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", "#fdd835", speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", "#90caf9", speed);
+      } else if (compound === "CaCl2") {
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", "#a5d6a7", speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", "#90caf9", speed);
+      } else if (compound === "CaCO3") {
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", "#a5d6a7", speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", "#4db6ac", speed);
+      }
+    }
 
     function resetSimulation() {
       dissolved = false;
       dissolvedIons = [];
+      document.getElementById("solidBoxContainer").style.opacity = "1";
     }
 
     function animate() {
