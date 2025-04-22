@@ -118,38 +118,48 @@ l<!DOCTYPE html>
     });
 
     function updateSolidDisplay() {
-      const compound = document.getElementById("compoundSelect").value;
-      solidIons = [];
+  const compound = document.getElementById("compoundSelect").value;
+  solidIons = [];
 
-      if (compound === "Na2CO3") {
-        solidIons = [
-          new Ion('Na⁺', 80, 130, '#fdd835'),
-          new Ion('Na⁺', 110, 130, '#fdd835'),
-          new Ion('CO₃²⁻', 95, 160, '#4db6ac'),
-          new Ion('Na⁺', 140, 130, '#fdd835'),
-          new Ion('Na⁺', 170, 130, '#fdd835'),
-          new Ion('CO₃²⁻', 155, 160, '#4db6ac')
-        ];
-      } else if (compound === "NaCl") {
-        solidIons = [
-          new Ion('Na⁺', 90, 130, '#fdd835'),
-          new Ion('Cl⁻', 120, 130, '#90caf9'),
-          new Ion('Na⁺', 150, 130, '#fdd835'),
-          new Ion('Cl⁻', 180, 130, '#90caf9')
-        ];
-      } else if (compound === "CaCl2") {
-        solidIons = [
-          new Ion('Ca²⁺', 120, 130, '#a5d6a7'),
-          new Ion('Cl⁻', 90, 170, '#90caf9'),
-          new Ion('Cl⁻', 150, 170, '#90caf9')
-        ];
-      } else if (compound === "CaCO3") {
-        solidIons = [
-          new Ion('Ca²⁺', 100, 130, '#a5d6a7'),
-          new Ion('CO₃²⁻', 140, 150, '#4db6ac')
-        ];
-      }
-    }
+  if (compound === "Na2CO3") {
+    solidIons = [
+      new Ion('Na⁺', 60, 110, '#fdd835'),
+      new Ion('Na⁺', 90, 110, '#fdd835'),
+      new Ion('CO₃²⁻', 75, 140, '#4db6ac'),
+      new Ion('Na⁺', 130, 110, '#fdd835'),
+      new Ion('Na⁺', 160, 110, '#fdd835'),
+      new Ion('CO₃²⁻', 145, 140, '#4db6ac')
+    ];
+  } else if (compound === "NaCl") {
+    solidIons = [
+      new Ion('Na⁺', 70, 110, '#fdd835'),
+      new Ion('Cl⁻', 100, 110, '#90caf9'),
+      new Ion('Na⁺', 130, 110, '#fdd835'),
+      new Ion('Cl⁻', 160, 110, '#90caf9'),
+      new Ion('Na⁺', 70, 160, '#fdd835'),
+      new Ion('Cl⁻', 100, 160, '#90caf9'),
+      new Ion('Na⁺', 130, 160, '#fdd835'),
+      new Ion('Cl⁻', 160, 160, '#90caf9')
+    ];
+  } else if (compound === "CaCl2") {
+    solidIons = [
+      new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
+      new Ion('Cl⁻', 70, 140, '#90caf9'),
+      new Ion('Cl⁻', 130, 140, '#90caf9'),
+      new Ion('Ca²⁺', 100, 180, '#a5d6a7'),
+      new Ion('Cl⁻', 70, 210, '#90caf9'),
+      new Ion('Cl⁻', 130, 210, '#90caf9')
+    ];
+  } else if (compound === "CaCO3") {
+    solidIons = [
+      new Ion('Ca²⁺', 80, 130, '#a5d6a7'),
+      new Ion('CO₃²⁻', 120, 150, '#4db6ac'),
+      new Ion('Ca²⁺', 160, 130, '#a5d6a7'),
+      new Ion('CO₃²⁻', 200, 150, '#4db6ac')
+    ];
+  }
+}
+
 
     function addIon(label, color, speed) {
       const angle = Math.random() * 2 * Math.PI;
