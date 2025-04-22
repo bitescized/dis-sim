@@ -11,17 +11,16 @@
       background: #000;
       color: white;
     }
-    .row {
+    .container {
       display: flex;
-      justify-content: center;
-      margin-bottom: 40px;
+      justify-content: space-around;
     }
     .box {
       width: 250px;
       height: 300px;
       border: 2px solid #0288d1;
       background-color: #ffffff;
-      margin: 0 20px;
+      margin: 20px;
       position: relative;
       transition: opacity 0.8s ease, border-color 0.3s ease;
     }
@@ -69,14 +68,14 @@
   </select>
   <button onclick="resetSimulation()">Reset</button>
 
-  <!-- Top comparison row -->
-  <div class="row">
+  <div class="container">
     <div style="text-align: center;">
       <div class="label">Solid Compound</div>
       <div class="box" id="solidBoxContainer" draggable="true">
         <canvas id="solidBox" width="250" height="300"></canvas>
       </div>
     </div>
+
     <div style="text-align: center;">
       <div class="label">Dissolved Ions</div>
       <div class="box" id="dissolvedBoxContainer"
@@ -89,24 +88,198 @@
     </div>
   </div>
 
-  <!-- Bottom comparison row -->
-  <div class="row">
-    <div style="text-align: center;">
-      <div class="label">Solid Compound (Compare)</div>
-      <div class="box">
-        <canvas width="250" height="300"></canvas>
-      </div>
-    </div>
-    <div style="text-align: center;">
-      <div class="label">Dissolved Ions (Compare)</div>
-      <div class="box">
-        <canvas width="250" height="300"></canvas>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // JavaScript remains unchanged from user's latest script
+    const solidCanvas = document.getElementById('solidBox');
+    const dissolvedCanvas = document.getElementById('dissolvedBox');
+    const solidCtx = solidCanvas.getContext('2d');
+    const dissolvedCtx = dissolvedCanvas.getContext('2d');
+
+    class Ion {
+      constructor(label, x, y, color) {
+        this.label = label;
+        this.x = x;
+        this.y = y;
+        this.vx = 0;
+        this.vy = 0;
+        this.color = color;
+        this.moving = false;
+      }
+
+      update() {
+        if (this.moving) {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 20 || this.x > dissolvedCanvas.width - 20) this.vx *= -1;
+          if (this.y < 20 || this.y > dissolvedCanvas.height - 20) this.vy *= -1;
+        }
+      }
+
+      draw(ctx) {
+        if (this.label === 'CO₃²⁻') {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+          ctx.fillStyle = 'gray';
+          ctx.fill();
+          ctx.stroke();
+
+          const angleOffsets = [0, 120, 240].map(a => a * Math.PI / 180);
+          angleOffsets.forEach(angle => {
+            const ox = this.x + 15 * Math.cos(angle);
+            const oy = this.y + 15 * Math.sin(angle);
+            ctx.beginPath();
+            ctx.arc(ox, oy, 10, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.stroke();
+          });
+
+          ctx.fillStyle = '#000';
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('CO₃²⁻', this.x, this.y + 40);
+        } else {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.strokeStyle = '#000';
+          ctx.stroke();
+          ctx.fillStyle = '#000';
+          ctx.font = '16px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(this.label, this.x, this.y + 5);
+        }
+      }
+    }
+
+    let solidIons = [];
+    let dissolvedIons = [];
+    let dissolved = false;
+
+    document.getElementById("compoundSelect").addEventListener("change", () => {
+      resetSimulation();
+      updateSolidDisplay();
+    });
+
+    document.getElementById("solidBoxContainer").addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", "drop-allowed");
+    });
+
+    function handleDrop(event) {
+      event.preventDefault();
+      event.currentTarget.classList.remove("highlight");
+
+      if (!dissolved) {
+        dissolve();
+        document.getElementById("solidBoxContainer").style.opacity = "0.3";
+      }
+    }
+
+    function updateSolidDisplay() {
+      const compound = document.getElementById("compoundSelect").value;
+      solidIons = [];
+
+      const green = '#66bb6a';
+      const purple = '#ab47bc';
+
+      if (compound === "Na2CO3") {
+        solidIons = [
+          new Ion('Na⁺', 60, 110, green),
+          new Ion('Na⁺', 90, 110, green),
+          new Ion('CO₃²⁻', 75, 140, '#4db6ac'),
+          new Ion('Na⁺', 130, 110, green),
+          new Ion('Na⁺', 160, 110, green),
+          new Ion('CO₃²⁻', 145, 140, '#4db6ac')
+        ];
+      } else if (compound === "NaCl") {
+        solidIons = [
+          new Ion('Na⁺', 70, 110, green),
+          new Ion('Cl⁻', 100, 110, purple),
+          new Ion('Na⁺', 130, 110, green),
+          new Ion('Cl⁻', 160, 110, purple),
+          new Ion('Na⁺', 70, 160, green),
+          new Ion('Cl⁻', 100, 160, purple),
+          new Ion('Na⁺', 130, 160, green),
+          new Ion('Cl⁻', 160, 160, purple)
+        ];
+      } else if (compound === "CaCl2") {
+        solidIons = [
+          new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
+          new Ion('Cl⁻', 70, 140, purple),
+          new Ion('Cl⁻', 130, 140, purple),
+          new Ion('Ca²⁺', 100, 180, '#a5d6a7'),
+          new Ion('Cl⁻', 70, 210, purple),
+          new Ion('Cl⁻', 130, 210, purple)
+        ];
+      } else if (compound === "CaCO3") {
+        solidIons = [
+          new Ion('Ca²⁺', 80, 130, '#a5d6a7'),
+          new Ion('CO₃²⁻', 120, 150, '#4db6ac'),
+          new Ion('Ca²⁺', 160, 130, '#a5d6a7'),
+          new Ion('CO₃²⁻', 200, 150, '#4db6ac')
+        ];
+      }
+    }
+
+    function addIon(label, color, speed) {
+      const angle = Math.random() * 2 * Math.PI;
+      const ion = new Ion(
+        label,
+        Math.random() * (dissolvedCanvas.width - 40) + 20,
+        Math.random() * (dissolvedCanvas.height - 40) + 20,
+        color
+      );
+      ion.vx = Math.cos(angle) * speed;
+      ion.vy = Math.sin(angle) * speed;
+      ion.moving = true;
+      dissolvedIons.push(ion);
+    }
+
+    function dissolve() {
+      if (dissolved) return;
+      dissolved = true;
+
+      const speed = 0.5;
+      const green = '#66bb6a';
+      const purple = '#ab47bc';
+      const compound = document.getElementById("compoundSelect").value;
+
+      if (compound === "Na2CO3") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+      } else if (compound === "NaCl") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+      } else if (compound === "CaCl2") {
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+      } else if (compound === "CaCO3") {
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+      }
+    }
+
+    function resetSimulation() {
+      dissolved = false;
+      dissolvedIons = [];
+      document.getElementById("solidBoxContainer").style.opacity = "1";
+    }
+
+    function animate() {
+      solidCtx.clearRect(0, 0, solidCanvas.width, solidCanvas.height);
+      dissolvedCtx.clearRect(0, 0, dissolvedCanvas.width, dissolvedCanvas.height);
+
+      solidIons.forEach(ion => ion.draw(solidCtx));
+      dissolvedIons.forEach(ion => {
+        ion.update();
+        ion.draw(dissolvedCtx);
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    updateSolidDisplay();
+    animate();
   </script>
 </body>
 </html>
