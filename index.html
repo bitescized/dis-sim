@@ -66,8 +66,8 @@ class Ion {
       // Oxygen atoms in triangle pattern
       const angleOffsets = [0, 120, 240].map(a => a * Math.PI / 180);
       angleOffsets.forEach(angle => {
-        const ox = this.x + 25 * Math.cos(angle);
-        const oy = this.y + 25 * Math.sin(angle);
+        const ox = this.x + 15 * Math.cos(angle);
+        const oy = this.y + 15 * Math.sin(angle);
         ctx.beginPath();
         ctx.arc(ox, oy, 10, 0, Math.PI * 2);
         ctx.fillStyle = 'red';
@@ -110,14 +110,30 @@ class Ion {
     ];
 
 function dissolve() {
-  dissolvedIons.forEach(ion => {
-    ion.x = Math.random() * (dissolvedCanvas.width - 40) + 20;
-    ion.y = Math.random() * (dissolvedCanvas.height - 40) + 20;
+  if (dissolveCount >= maxDissolves) return;
+  dissolveCount++;
+
+  // Add 2 Na⁺
+  for (let i = 0; i < 2; i++) {
+    const ion = new Ion('Na⁺', Math.random() * (dissolvedCanvas.width - 40) + 20,
+                        Math.random() * (dissolvedCanvas.height - 40) + 20,
+                        '#fdd835');
     ion.vx = Math.random() * 4 - 2;
     ion.vy = Math.random() * 4 - 2;
     ion.moving = true;
-  });
+    dissolvedIons.push(ion);
+  }
+
+  // Add 1 CO₃²⁻
+  const co3 = new Ion('CO₃²⁻', Math.random() * (dissolvedCanvas.width - 40) + 20,
+                      Math.random() * (dissolvedCanvas.height - 40) + 20,
+                      '#4db6ac');
+  co3.vx = Math.random() * 4 - 2;
+  co3.vy = Math.random() * 4 - 2;
+  co3.moving = true;
+  dissolvedIons.push(co3);
 }
+
 
 
     function animate() {
