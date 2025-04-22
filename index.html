@@ -27,8 +27,11 @@
   <select id="compoundSelect">
     <option value="Na2CO3">Sodium Carbonate (Na₂CO₃)</option>
     <option value="NaCl">Sodium Chloride (NaCl)</option>
+    <option value="CaCl2">Calcium Chloride (CaCl₂)</option>
+    <option value="CaCO3">Calcium Carbonate (CaCO₃)</option>
   </select>
   <button onclick="dissolve()">Add to Water</button>
+  <button onclick="resetSimulation()">Reset</button>
 
   <div class="container">
     <div class="box">
@@ -106,10 +109,13 @@
     }
 
     let solidIons = [];
-    const dissolvedIons = [];
+    let dissolvedIons = [];
     let dissolved = false;
 
-    document.getElementById("compoundSelect").addEventListener("change", updateSolidDisplay);
+    document.getElementById("compoundSelect").addEventListener("change", () => {
+      resetSimulation();  // clear old ions when switching
+      updateSolidDisplay();
+    });
 
     function updateSolidDisplay() {
       const compound = document.getElementById("compoundSelect").value;
@@ -130,6 +136,17 @@
           new Ion('Cl⁻', 120, 130, '#90caf9'),
           new Ion('Na⁺', 150, 130, '#fdd835'),
           new Ion('Cl⁻', 180, 130, '#90caf9')
+        ];
+      } else if (compound === "CaCl2") {
+        solidIons = [
+          new Ion('Ca²⁺', 120, 130, '#a5d6a7'),
+          new Ion('Cl⁻', 90, 170, '#90caf9'),
+          new Ion('Cl⁻', 150, 170, '#90caf9')
+        ];
+      } else if (compound === "CaCO3") {
+        solidIons = [
+          new Ion('Ca²⁺', 100, 130, '#a5d6a7'),
+          new Ion('CO₃²⁻', 140, 150, '#4db6ac')
         ];
       }
     }
@@ -161,7 +178,19 @@
       } else if (compound === "NaCl") {
         for (let i = 0; i < 4; i++) addIon("Na⁺", "#fdd835", speed);
         for (let i = 0; i < 4; i++) addIon("Cl⁻", "#90caf9", speed);
+      } else if (compound === "CaCl2") {
+        addIon("Ca²⁺", "#a5d6a7", speed);
+        addIon("Cl⁻", "#90caf9", speed);
+        addIon("Cl⁻", "#90caf9", speed);
+      } else if (compound === "CaCO3") {
+        addIon("Ca²⁺", "#a5d6a7", speed);
+        addIon("CO₃²⁻", "#4db6ac", speed);
       }
+    }
+
+    function resetSimulation() {
+      dissolved = false;
+      dissolvedIons = [];
     }
 
     function animate() {
@@ -177,7 +206,7 @@
       requestAnimationFrame(animate);
     }
 
-    updateSolidDisplay(); // set initial compound view
+    updateSolidDisplay();
     animate();
   </script>
 </body>
