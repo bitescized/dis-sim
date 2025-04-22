@@ -3,29 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dual Substance Simulations</title>
+  <title>Two Independent Ionic Simulations</title>
   <style>
     body {
       font-family: sans-serif;
       background: #000;
       color: white;
-      padding: 20px;
       text-align: center;
     }
-    .sim-container {
+    .sim-row {
       margin-bottom: 60px;
     }
     .container {
       display: flex;
       justify-content: center;
       gap: 40px;
+      margin-top: 10px;
     }
     .box {
       width: 250px;
       height: 300px;
       border: 2px solid #0288d1;
       background-color: #ffffff;
-      position: relative;
       transition: opacity 0.8s ease, border-color 0.3s ease;
     }
     .water-box {
@@ -48,24 +47,20 @@
     }
     .label {
       font-weight: bold;
-      margin-bottom: 4px;
+      margin-top: 10px;
     }
     .highlight {
       border-color: #00c853 !important;
-    }
-    .instructions {
-      font-style: italic;
-      margin-bottom: 10px;
-      color: #ccc;
     }
   </style>
 </head>
 <body>
 
-  <h1>Substance in Water - Dual Simulations</h1>
+  <h1>Compare Two Ionic Dissolutions</h1>
 
-  <div id="sim1" class="sim-container">
-    <p class="instructions">Simulation 1: Drag the solid into water to dissolve.</p>
+  <!-- Simulation 1 -->
+  <div class="sim-row" id="sim1">
+    <h2>Simulation 1</h2>
     <select id="compoundSelect1"></select>
     <button onclick="resetSimulation('1')">Reset</button>
     <div class="container">
@@ -88,8 +83,9 @@
     </div>
   </div>
 
-  <div id="sim2" class="sim-container">
-    <p class="instructions">Simulation 2: Drag the solid into water to dissolve.</p>
+  <!-- Simulation 2 -->
+  <div class="sim-row" id="sim2">
+    <h2>Simulation 2</h2>
     <select id="compoundSelect2"></select>
     <button onclick="resetSimulation('2')">Reset</button>
     <div class="container">
@@ -114,13 +110,38 @@
 
   <script>
     const compounds = {
-      Na2CO3: { ions: [["Na⁺", 4, "#66bb6a"], ["CO₃²⁻", 2, "#4db6ac"]] },
-      NaCl: { ions: [["Na⁺", 4, "#66bb6a"], ["Cl⁻", 4, "#ab47bc"]] },
-      CaCl2: { ions: [["Ca²⁺", 2, "#a5d6a7"], ["Cl⁻", 4, "#ab47bc"]] },
-      CaCO3: { ions: [["Ca²⁺", 2, "#a5d6a7"], ["CO₃²⁻", 2, "#4db6ac"]] },
-      MgSO4: { ions: [["Mg²⁺", 2, "#90caf9"], ["SO₄²⁻", 2, "yellow"]] },
-      MgCl2: { ions: [["Mg²⁺", 2, "#90caf9"], ["Cl⁻", 4, "#ab47bc"]] },
-      Na2SO4: { ions: [["Na⁺", 4, "#66bb6a"], ["SO₄²⁻", 2, "yellow"]] }
+      Na2CO3: [
+        { type: 'solid', layout: [
+          ['Na⁺', 60, 100, '#66bb6a'], ['Na⁺', 90, 100, '#66bb6a'],
+          ['CO₃²⁻', 75, 130, '#4db6ac'], ['Na⁺', 130, 100, '#66bb6a'],
+          ['Na⁺', 160, 100, '#66bb6a'], ['CO₃²⁻', 145, 130, '#4db6ac']
+        ] },
+        { type: 'dissolved', ions: [
+          ['Na⁺', 4, '#66bb6a'], ['CO₃²⁻', 2, '#4db6ac']
+        ] }
+      ],
+      NaCl: [
+        { type: 'solid', layout: [
+          ['Na⁺', 60, 100, '#66bb6a'], ['Cl⁻', 90, 100, '#ab47bc'],
+          ['Na⁺', 120, 100, '#66bb6a'], ['Cl⁻', 150, 100, '#ab47bc'],
+          ['Na⁺', 60, 160, '#66bb6a'], ['Cl⁻', 90, 160, '#ab47bc'],
+          ['Na⁺', 120, 160, '#66bb6a'], ['Cl⁻', 150, 160, '#ab47bc']
+        ] },
+        { type: 'dissolved', ions: [
+          ['Na⁺', 4, '#66bb6a'], ['Cl⁻', 4, '#ab47bc']
+        ] }
+      ],
+      Na2SO4: [
+        { type: 'solid', layout: [
+          ['Na⁺', 60, 100, '#66bb6a'], ['Na⁺', 90, 100, '#66bb6a'],
+          ['SO₄²⁻', 75, 130, 'yellow'], ['Na⁺', 130, 100, '#66bb6a'],
+          ['Na⁺', 160, 100, '#66bb6a'], ['SO₄²⁻', 145, 130, 'yellow']
+        ] },
+        { type: 'dissolved', ions: [
+          ['Na⁺', 4, '#66bb6a'], ['SO₄²⁻', 2, 'yellow']
+        ] }
+      ]
+      // Add more compounds as needed
     };
 
     class Ion {
@@ -128,9 +149,9 @@
         this.label = label;
         this.x = x;
         this.y = y;
-        this.color = color;
         this.vx = 0;
         this.vy = 0;
+        this.color = color;
         this.moving = false;
       }
 
@@ -148,37 +169,32 @@
           ctx.beginPath();
           ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
           ctx.fillStyle = 'gray';
-          ctx.fill();
-          ctx.stroke();
-          [0, 120, 240].forEach(a => {
-            const angle = a * Math.PI / 180;
-            const ox = this.x + 15 * Math.cos(angle);
-            const oy = this.y + 15 * Math.sin(angle);
+          ctx.fill(); ctx.stroke();
+          [0, 120, 240].forEach(angle => {
+            const rad = angle * Math.PI / 180;
+            const ox = this.x + 15 * Math.cos(rad);
+            const oy = this.y + 15 * Math.sin(rad);
             ctx.beginPath();
             ctx.arc(ox, oy, 10, 0, Math.PI * 2);
             ctx.fillStyle = 'red';
-            ctx.fill();
-            ctx.stroke();
+            ctx.fill(); ctx.stroke();
           });
         } else if (this.label === 'SO₄²⁻') {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
           ctx.fillStyle = 'yellow';
-          ctx.fill();
-          ctx.stroke();
-          [{ dx: 0, dy: -20 }, { dx: 20, dy: 0 }, { dx: 0, dy: 20 }, { dx: -20, dy: 0 }].forEach(pos => {
+          ctx.fill(); ctx.stroke();
+          [{dx:0,dy:-20}, {dx:20,dy:0}, {dx:0,dy:20}, {dx:-20,dy:0}].forEach(pos => {
             ctx.beginPath();
             ctx.arc(this.x + pos.dx, this.y + pos.dy, 10, 0, Math.PI * 2);
             ctx.fillStyle = 'red';
-            ctx.fill();
-            ctx.stroke();
+            ctx.fill(); ctx.stroke();
           });
         } else {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
           ctx.fillStyle = this.color;
-          ctx.fill();
-          ctx.stroke();
+          ctx.fill(); ctx.stroke();
         }
         ctx.fillStyle = '#000';
         ctx.font = '14px sans-serif';
@@ -189,67 +205,58 @@
 
     const simulations = {};
 
-    function createSimulation(simId) {
-      const select = document.getElementById(`compoundSelect${simId}`);
-      Object.keys(compounds).forEach(key => {
-        const opt = document.createElement("option");
-        opt.value = key;
-        opt.textContent = key;
+    function setupSimulation(id) {
+      const select = document.getElementById(`compoundSelect${id}`);
+      for (const compound in compounds) {
+        const opt = document.createElement('option');
+        opt.value = compound;
+        opt.textContent = compound;
         select.appendChild(opt);
-      });
+      }
 
-      simulations[simId] = {
-        solidCanvas: document.getElementById(`solidCanvas${simId}`),
-        dissolvedCanvas: document.getElementById(`dissolvedCanvas${simId}`),
-        solidCtx: document.getElementById(`solidCanvas${simId}`).getContext('2d'),
-        dissolvedCtx: document.getElementById(`dissolvedCanvas${simId}`).getContext('2d'),
+      simulations[id] = {
+        solidCtx: document.getElementById(`solidCanvas${id}`).getContext('2d'),
+        dissolvedCtx: document.getElementById(`dissolvedCanvas${id}`).getContext('2d'),
+        dissolvedCanvas: document.getElementById(`dissolvedCanvas${id}`),
         solidIons: [],
         dissolvedIons: [],
         dissolved: false,
-        selectedCompound: select.value
+        selected: select.value
       };
 
       select.addEventListener("change", () => {
-        simulations[simId].selectedCompound = select.value;
-        resetSimulation(simId);
-        updateSolidDisplay(simId);
+        simulations[id].selected = select.value;
+        resetSimulation(id);
+        drawSolid(id);
       });
 
-      document.getElementById(`solidBoxContainer${simId}`).addEventListener("dragstart", (e) => {
+      document.getElementById(`solidBoxContainer${id}`).addEventListener("dragstart", (e) => {
         e.dataTransfer.setData("text/plain", "drop-allowed");
       });
 
-      updateSolidDisplay(simId);
-      animate(simId);
+      drawSolid(id);
+      animate(id);
     }
 
-    function updateSolidDisplay(simId) {
-      const sim = simulations[simId];
-      sim.solidIons = [];
-      const ions = compounds[sim.selectedCompound].ions;
-      let x = 40, y = 60;
-      ions.forEach(([label, count, color]) => {
-        for (let i = 0; i < count; i++) {
-          sim.solidIons.push(new Ion(label, x, y, color));
-          x += 50;
-          if (x > 200) { x = 40; y += 50; }
-        }
-      });
+    function drawSolid(id) {
+      const sim = simulations[id];
+      const layout = compounds[sim.selected][0].layout;
+      sim.solidIons = layout.map(([label, x, y, color]) => new Ion(label, x, y, color));
     }
 
-    function dissolve(simId) {
-      const sim = simulations[simId];
+    function dissolve(id) {
+      const sim = simulations[id];
       if (sim.dissolved) return;
       sim.dissolved = true;
-      const ions = compounds[sim.selectedCompound].ions;
+      const ions = compounds[sim.selected][1].ions;
       ions.forEach(([label, count, color]) => {
         for (let i = 0; i < count; i++) {
+          const angle = Math.random() * 2 * Math.PI;
           const ion = new Ion(label,
             Math.random() * 210 + 20,
             Math.random() * 260 + 20,
             color
           );
-          const angle = Math.random() * 2 * Math.PI;
           ion.vx = Math.cos(angle) * 0.5;
           ion.vy = Math.sin(angle) * 0.5;
           ion.moving = true;
@@ -258,21 +265,21 @@
       });
     }
 
-    function handleDrop(simId) {
-      document.getElementById(`solidBoxContainer${simId}`).style.opacity = "0.3";
-      dissolve(simId);
+    function handleDrop(id) {
+      document.getElementById(`solidBoxContainer${id}`).style.opacity = 0.3;
+      dissolve(id);
     }
 
-    function resetSimulation(simId) {
-      const sim = simulations[simId];
+    function resetSimulation(id) {
+      const sim = simulations[id];
       sim.dissolved = false;
       sim.dissolvedIons = [];
-      document.getElementById(`solidBoxContainer${simId}`).style.opacity = "1";
-      updateSolidDisplay(simId);
+      document.getElementById(`solidBoxContainer${id}`).style.opacity = 1;
+      drawSolid(id);
     }
 
-    function animate(simId) {
-      const sim = simulations[simId];
+    function animate(id) {
+      const sim = simulations[id];
       sim.solidCtx.clearRect(0, 0, 250, 300);
       sim.dissolvedCtx.clearRect(0, 0, 250, 300);
       sim.solidIons.forEach(ion => ion.draw(sim.solidCtx));
@@ -280,11 +287,11 @@
         ion.update(sim.dissolvedCanvas);
         ion.draw(sim.dissolvedCtx);
       });
-      requestAnimationFrame(() => animate(simId));
+      requestAnimationFrame(() => animate(id));
     }
 
-    createSimulation('1');
-    createSimulation('2');
+    setupSimulation("1");
+    setupSimulation("2");
   </script>
 </body>
 </html>
