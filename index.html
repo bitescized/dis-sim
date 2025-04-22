@@ -239,36 +239,30 @@
       }
     }
 
-    function updateSolidDisplay() {
-      const compound = document.getElementById("compoundSelect").value;
-      solidIons = [];
+function updateSolidDisplay() {
+  const compound = document.getElementById("compoundSelect").value;
+  solidIons = [];
 
-      const green = '#66bb6a';
-      const purple = '#ab47bc';
+  const green = '#66bb6a';
+  const purple = '#ab47bc';
 
-      if (compound === "Na2CO3") {
-        solidIons = [
-          new Ion('Na⁺', 60, 100, green),
-          new Ion('Na⁺', 90, 100, green),
-          new Ion('CO₃²⁻', 75, 130, '#4db6ac'),
-          new Ion('Na⁺', 130, 100, green),
-          new Ion('Na⁺', 160, 100, green),
-          new Ion('CO₃²⁻', 145, 130, '#4db6ac')
-        ];
-      } else if (compound === "Sucrose") {
-        solidIons = [
-          { type: 'sucrose', x: 75, y: 110 },
-          { type: 'sucrose', x: 175, y: 110 }
-        ];
-      }
-
-     } else if (compound === "Glucose") {
-  solidIons = [
-    { type: 'glucose', x: 30, y: 20 },
-    { type: 'glucose', x: 80, y: 60 }
-  ];
+  if (compound === "Na2CO3") {
+    solidIons = [
+      new Ion('Na⁺', 60, 100, green),
+      new Ion('Na⁺', 90, 100, green),
+      new Ion('CO₃²⁻', 75, 130, '#4db6ac'),
+      new Ion('Na⁺', 130, 100, green),
+      new Ion('Na⁺', 160, 100, green),
+      new Ion('CO₃²⁻', 145, 130, '#4db6ac')
+    ];
+  } else if (compound === "Glucose") {
+    solidIons = [
+      { type: 'glucose', x: 30, y: 20 },
+      { type: 'glucose', x: 80, y: 60 }
+    ];
+  }
 }
-    }
+
 
     function addIon(label, color, speed) {
       const angle = Math.random() * 2 * Math.PI;
