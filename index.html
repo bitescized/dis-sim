@@ -68,7 +68,7 @@
     <option value="MgSO4">Magnesium Sulfate (MgSO₄)</option>
     <option value="MgCl2">Magnesium Chloride (MgCl₂)</option>
     <option value="Na2SO4">Sodium Sulfate (Na₂SO₄)</option>
-    <option value="Sucrose">Sucrose (C₁₂H₂₂O₁₁)</option>
+    <option value="Glucose">Glucose (C₆H₁₂O₆)</option>
   </select>
   <button onclick="resetSimulation()">Reset</button>
 
@@ -176,36 +176,45 @@
       }
     }
 
-    function drawSucroseCluster(ctx, originX, originY) {
-      const atomRadius = 4;
-      const spacing = 8;
-      let atoms = [];
+   function drawGlucoseMolecule(ctx, originX, originY) {
+  const atoms = [
+    // Ring (C1–C5 and O)
+    { dx: 0, dy: 0, size: 10, color: 'gray' },
+    { dx: 30, dy: 0, size: 10, color: 'gray' },
+    { dx: 60, dy: 10, size: 10, color: 'gray' },
+    { dx: 60, dy: 40, size: 10, color: 'gray' },
+    { dx: 30, dy: 50, size: 10, color: 'gray' },
+    { dx: 0, dy: 40, size: 10, color: 'red' },
 
-      for (let i = 0; i < 12; i++) atoms.push({ label: 'C', color: 'black' });
-      for (let i = 0; i < 22; i++) atoms.push({ label: 'H', color: 'white' });
-      for (let i = 0; i < 11; i++) atoms.push({ label: 'O', color: 'red' });
+    // C6 tail
+    { dx: 30, dy: 75, size: 10, color: 'gray' },
+    { dx: 20, dy: 85, size: 6, color: 'white' },
+    { dx: 40, dy: 85, size: 10, color: 'red' },
 
-      atoms.forEach((atom, i) => {
-        const angle = (i / atoms.length) * 2 * Math.PI;
-        const x = originX + 20 * Math.cos(angle) + Math.random() * spacing - spacing / 2;
-        const y = originY + 20 * Math.sin(angle) + Math.random() * spacing - spacing / 2;
+    // OH groups
+    { dx: -10, dy: -10, size: 10, color: 'red' },
+    { dx: 40, dy: -10, size: 10, color: 'red' },
+    { dx: 70, dy: 0, size: 10, color: 'red' },
+    { dx: 70, dy: 50, size: 10, color: 'red' },
+    { dx: 20, dy: 60, size: 10, color: 'red' },
 
-        ctx.beginPath();
-        ctx.arc(x, y, atomRadius, 0, Math.PI * 2);
-        ctx.fillStyle = atom.color;
-        ctx.fill();
-        ctx.stroke();
+    // H atoms
+    { dx: 10, dy: 10, size: 6, color: 'white' },
+    { dx: 20, dy: -10, size: 6, color: 'white' },
+    { dx: 50, dy: 0, size: 6, color: 'white' },
+    { dx: 50, dy: 50, size: 6, color: 'white' },
+    { dx: 40, dy: 60, size: 6, color: 'white' },
+  ];
 
-        ctx.fillStyle = atom.color === 'white' ? 'black' : 'white';
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(atom.label, x, y + 3);
-      });
+  atoms.forEach(atom => {
+    ctx.beginPath();
+    ctx.arc(originX + atom.dx, originY + atom.dy, atom.size, 0, Math.PI * 2);
+    ctx.fillStyle = atom.color;
+    ctx.fill();
+    ctx.stroke();
+  });
+}
 
-      ctx.fillStyle = '#000';
-      ctx.font = '12px sans-serif';
-      ctx.fillText('C₁₂H₂₂O₁₁', originX, originY + 35);
-    }
 
     let solidIons = [];
     let dissolvedIons = [];
@@ -253,7 +262,12 @@
         ];
       }
 
-      // Add other compounds here as in your original script...
+     } else if (compound === "Glucose") {
+  solidIons = [
+    { type: 'glucose', x: 30, y: 20 },
+    { type: 'glucose', x: 80, y: 60 }
+  ];
+}
     }
 
     function addIon(label, color, speed) {
@@ -276,12 +290,12 @@
 
       const compound = document.getElementById("compoundSelect").value;
 
-      if (compound === "Sucrose") {
-        dissolvedIons = [
-          { type: 'sucrose', x: 80, y: 100, vx: 0.4, vy: 0.3 },
-          { type: 'sucrose', x: 160, y: 160, vx: -0.3, vy: 0.4 }
-        ];
-      }
+} else if (compound === "Glucose") {
+  dissolvedIons = [
+    { type: 'glucose', x: 60, y: 80, vx: 0.3, vy: 0.2 },
+    { type: 'glucose', x: 130, y: 160, vx: -0.2, vy: 0.3 }
+  ];
+}
 
       // Add other compound logic here as before...
     }
@@ -296,28 +310,27 @@
       solidCtx.clearRect(0, 0, solidCanvas.width, solidCanvas.height);
       dissolvedCtx.clearRect(0, 0, dissolvedCanvas.width, dissolvedCanvas.height);
 
-      solidIons.forEach(ion => {
-        if (ion instanceof Ion) {
-          ion.draw(solidCtx);
-        } else if (ion.type === 'sucrose') {
-          drawSucroseCluster(solidCtx, ion.x, ion.y);
-        }
-      });
+solidIons.forEach(ion => {
+  if (ion instanceof Ion) {
+    ion.draw(solidCtx);
+  } else if (ion.type === 'glucose') {
+    drawGlucoseMolecule(solidCtx, ion.x, ion.y);
+  }
+});
 
-      dissolvedIons.forEach(ion => {
-        if (ion instanceof Ion) {
-          ion.update();
-          ion.draw(dissolvedCtx);
-        } else if (ion.type === 'sucrose') {
-          ion.x += ion.vx;
-          ion.y += ion.vy;
+dissolvedIons.forEach(ion => {
+  if (ion instanceof Ion) {
+    ion.update();
+    ion.draw(dissolvedCtx);
+  } else if (ion.type === 'glucose') {
+    ion.x += ion.vx;
+    ion.y += ion.vy;
+    if (ion.x < -10 || ion.x > dissolvedCanvas.width - 60) ion.vx *= -1;
+    if (ion.y < -10 || ion.y > dissolvedCanvas.height - 60) ion.vy *= -1;
+    drawGlucoseMolecule(dissolvedCtx, ion.x, ion.y);
+  }
+});
 
-          if (ion.x < 30 || ion.x > dissolvedCanvas.width - 30) ion.vx *= -1;
-          if (ion.y < 30 || ion.y > dissolvedCanvas.height - 30) ion.vy *= -1;
-
-          drawSucroseCluster(dissolvedCtx, ion.x, ion.y);
-        }
-      });
 
       requestAnimationFrame(animate);
     }
