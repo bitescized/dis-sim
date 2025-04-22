@@ -179,39 +179,39 @@
 function drawGlucoseMolecule(ctx, originX, originY) {
   const scale = 0.6;
 
-  const atoms = [
-    // First draw everything except carbon (so C appears on top)
-    // Ring oxygen
-    { dx: 0, dy: 40, size: 10, color: 'red' }, // O in ring
+  const backOxygens = [ // drawn first
+    { dx: -10, dy: -10, size: 10, color: 'red' }, // OH on C1
+    { dx: 40, dy: -10, size: 10, color: 'red' },  // OH on C2
+    { dx: 20, dy: 60, size: 10, color: 'red' }    // OH on C5
+  ];
 
-    // C6 tail
-    { dx: 20, dy: 85, size: 6, color: 'white' }, // H on C6
-    { dx: 40, dy: 85, size: 10, color: 'red' },  // OH on C6
-
-    // OH groups
-    { dx: -10, dy: -10, size: 10, color: 'red' },
-    { dx: 40, dy: -10, size: 10, color: 'red' },
-    { dx: 70, dy: 0, size: 10, color: 'red' },
-    { dx: 70, dy: 50, size: 10, color: 'red' },
-    { dx: 20, dy: 60, size: 10, color: 'red' },
-
-    // H atoms
-    { dx: 10, dy: 10, size: 6, color: 'white' },
+  const hydrogens = [
     { dx: 20, dy: -10, size: 6, color: 'white' },
     { dx: 50, dy: 0, size: 6, color: 'white' },
     { dx: 50, dy: 50, size: 6, color: 'white' },
     { dx: 40, dy: 60, size: 6, color: 'white' },
+    { dx: 10, dy: 10, size: 6, color: 'white' },
+    { dx: 20, dy: 85, size: 6, color: 'white' }
+  ];
 
-    // Now draw carbon atoms (C) so they appear on top
+  const carbons = [ // drawn after background O
     { dx: 0, dy: 0, size: 10, color: 'gray' },
     { dx: 30, dy: 0, size: 10, color: 'gray' },
     { dx: 60, dy: 10, size: 10, color: 'gray' },
     { dx: 60, dy: 40, size: 10, color: 'gray' },
     { dx: 30, dy: 50, size: 10, color: 'gray' },
-    { dx: 30, dy: 75, size: 10, color: 'gray' }, // C6
+    { dx: 30, dy: 75, size: 10, color: 'gray' } // C6
   ];
 
-  atoms.forEach(atom => {
+  const frontOxygens = [ // drawn last
+    { dx: 70, dy: 0, size: 10, color: 'red' },  // OH on C3
+    { dx: 70, dy: 50, size: 10, color: 'red' }, // OH on C4
+    { dx: 40, dy: 85, size: 10, color: 'red' }, // OH on C6
+    { dx: 0, dy: 40, size: 10, color: 'red' }   // Ring oxygen
+  ];
+
+  // Draw in order: back O → H → C → front O
+  [...backOxygens, ...hydrogens, ...carbons, ...frontOxygens].forEach(atom => {
     ctx.beginPath();
     ctx.arc(originX + atom.dx * scale, originY + atom.dy * scale, atom.size, 0, Math.PI * 2);
     ctx.fillStyle = atom.color;
@@ -219,6 +219,7 @@ function drawGlucoseMolecule(ctx, originX, originY) {
     ctx.stroke();
   });
 }
+
 
 
     let solidIons = [];
