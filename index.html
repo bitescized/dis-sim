@@ -5,8 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ionic Compound Dissolution</title>
   <style>
-    body { text-align: center; font-family: sans-serif; background: #e0f7fa; }
-    .container { display: flex; justify-content: space-around; }
+    body {
+      text-align: center;
+      font-family: sans-serif;
+      background: #000;
+      color: white;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+    }
     .box {
       width: 250px;
       height: 300px;
@@ -16,7 +24,12 @@
       position: relative;
       transition: opacity 0.8s ease, border-color 0.3s ease;
     }
-    canvas { background: white; }
+    #dissolvedBox {
+      background: #b3e5fc;
+    }
+    canvas {
+      background: white;
+    }
     select, button {
       margin: 10px;
       padding: 10px 20px;
@@ -25,20 +38,28 @@
       border: none;
     }
     button {
-      background: #0288d1; color: white; cursor: pointer;
+      background: #0288d1;
+      color: white;
+      cursor: pointer;
     }
-.label {
-  font-weight: bold;
-  margin-bottom: 4px;
-
+    .label {
+      font-weight: bold;
+      margin-bottom: 4px;
     }
     .highlight {
       border-color: #00c853 !important;
+    }
+    .instructions {
+      font-style: italic;
+      margin-bottom: 10px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
   <h1>Ionic Compound Dissolving in Water</h1>
+  <p class="instructions">Drag the solid compound into the water box to dissolve it.</p>
+
   <select id="compoundSelect">
     <option value="Na2CO3">Sodium Carbonate (Na₂CO₃)</option>
     <option value="NaCl">Sodium Chloride (NaCl)</option>
@@ -47,26 +68,25 @@
   </select>
   <button onclick="resetSimulation()">Reset</button>
 
-<div class="container">
-  <div style="text-align: center;">
-    <div class="label">Solid Compound</div>
-    <div class="box" id="solidBoxContainer" draggable="true">
-      <canvas id="solidBox" width="250" height="300"></canvas>
+  <div class="container">
+    <div style="text-align: center;">
+      <div class="label">Solid Compound</div>
+      <div class="box" id="solidBoxContainer" draggable="true">
+        <canvas id="solidBox" width="250" height="300"></canvas>
+      </div>
+    </div>
+
+    <div style="text-align: center;">
+      <div class="label">Dissolved Ions</div>
+      <div class="box" id="dissolvedBoxContainer"
+           ondragover="event.preventDefault()"
+           ondragenter="this.classList.add('highlight')"
+           ondragleave="this.classList.remove('highlight')"
+           ondrop="handleDrop(event)">
+        <canvas id="dissolvedBox" width="250" height="300"></canvas>
+      </div>
     </div>
   </div>
-
-  <div style="text-align: center;">
-    <div class="label">Dissolved Ions</div>
-    <div class="box" id="dissolvedBoxContainer"
-         ondragover="event.preventDefault()"
-         ondragenter="this.classList.add('highlight')"
-         ondragleave="this.classList.remove('highlight')"
-         ondrop="handleDrop(event)">
-      <canvas id="dissolvedBox" width="250" height="300"></canvas>
-    </div>
-  </div>
-</div>
-
 
   <script>
     const solidCanvas = document.getElementById('solidBox');
@@ -159,34 +179,37 @@
       const compound = document.getElementById("compoundSelect").value;
       solidIons = [];
 
+      const green = '#66bb6a';
+      const purple = '#ab47bc';
+
       if (compound === "Na2CO3") {
         solidIons = [
-          new Ion('Na⁺', 60, 110, '#fdd835'),
-          new Ion('Na⁺', 90, 110, '#fdd835'),
+          new Ion('Na⁺', 60, 110, green),
+          new Ion('Na⁺', 90, 110, green),
           new Ion('CO₃²⁻', 75, 140, '#4db6ac'),
-          new Ion('Na⁺', 130, 110, '#fdd835'),
-          new Ion('Na⁺', 160, 110, '#fdd835'),
+          new Ion('Na⁺', 130, 110, green),
+          new Ion('Na⁺', 160, 110, green),
           new Ion('CO₃²⁻', 145, 140, '#4db6ac')
         ];
       } else if (compound === "NaCl") {
         solidIons = [
-          new Ion('Na⁺', 70, 110, '#fdd835'),
-          new Ion('Cl⁻', 100, 110, '#90caf9'),
-          new Ion('Na⁺', 130, 110, '#fdd835'),
-          new Ion('Cl⁻', 160, 110, '#90caf9'),
-          new Ion('Na⁺', 70, 160, '#fdd835'),
-          new Ion('Cl⁻', 100, 160, '#90caf9'),
-          new Ion('Na⁺', 130, 160, '#fdd835'),
-          new Ion('Cl⁻', 160, 160, '#90caf9')
+          new Ion('Na⁺', 70, 110, green),
+          new Ion('Cl⁻', 100, 110, purple),
+          new Ion('Na⁺', 130, 110, green),
+          new Ion('Cl⁻', 160, 110, purple),
+          new Ion('Na⁺', 70, 160, green),
+          new Ion('Cl⁻', 100, 160, purple),
+          new Ion('Na⁺', 130, 160, green),
+          new Ion('Cl⁻', 160, 160, purple)
         ];
       } else if (compound === "CaCl2") {
         solidIons = [
           new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
-          new Ion('Cl⁻', 70, 140, '#90caf9'),
-          new Ion('Cl⁻', 130, 140, '#90caf9'),
+          new Ion('Cl⁻', 70, 140, purple),
+          new Ion('Cl⁻', 130, 140, purple),
           new Ion('Ca²⁺', 100, 180, '#a5d6a7'),
-          new Ion('Cl⁻', 70, 210, '#90caf9'),
-          new Ion('Cl⁻', 130, 210, '#90caf9')
+          new Ion('Cl⁻', 70, 210, purple),
+          new Ion('Cl⁻', 130, 210, purple)
         ];
       } else if (compound === "CaCO3") {
         solidIons = [
@@ -217,20 +240,22 @@
       dissolved = true;
 
       const speed = 0.5;
+      const green = '#66bb6a';
+      const purple = '#ab47bc';
       const compound = document.getElementById("compoundSelect").value;
 
       if (compound === "Na2CO3") {
-        for (let i = 0; i < 4; i++) addIon("Na⁺", "#fdd835", speed);
-        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", "#4db6ac", speed);
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
       } else if (compound === "NaCl") {
-        for (let i = 0; i < 4; i++) addIon("Na⁺", "#fdd835", speed);
-        for (let i = 0; i < 4; i++) addIon("Cl⁻", "#90caf9", speed);
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
       } else if (compound === "CaCl2") {
-        for (let i = 0; i < 2; i++) addIon("Ca²⁺", "#a5d6a7", speed);
-        for (let i = 0; i < 4; i++) addIon("Cl⁻", "#90caf9", speed);
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
       } else if (compound === "CaCO3") {
-        for (let i = 0; i < 2; i++) addIon("Ca²⁺", "#a5d6a7", speed);
-        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", "#4db6ac", speed);
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
       }
     }
 
