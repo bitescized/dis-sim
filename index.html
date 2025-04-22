@@ -54,19 +54,46 @@
         }
       }
 
-      draw(ctx) {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.strokeStyle = '#000';
-        ctx.stroke();
-        ctx.fillStyle = '#000';
-        ctx.font = '16px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(this.label, this.x, this.y + 5);
-      }
-    }
+draw(ctx) {
+  if (this.label === 'CO₃²⁻') {
+    // Central carbon atom
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+    ctx.fillStyle = 'gray';
+    ctx.fill();
+    ctx.stroke();
+
+    // Oxygen atoms in triangle pattern
+    const angleOffsets = [0, 120, 240].map(a => a * Math.PI / 180);
+    angleOffsets.forEach(angle => {
+      const ox = this.x + 25 * Math.cos(angle);
+      const oy = this.y + 25 * Math.sin(angle);
+      ctx.beginPath();
+      ctx.arc(ox, oy, 10, 0, Math.PI * 2);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      ctx.stroke();
+    });
+
+    // Optional: Draw label
+    ctx.fillStyle = '#000';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('CO₃²⁻', this.x, this.y + 40);
+  } else {
+    // Default Na⁺ or others
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.stroke();
+    ctx.fillStyle = '#000';
+    ctx.font = '16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(this.label, this.x, this.y + 5);
+  }
+}
 
     const solidIons = [
       new Ion('Na⁺', 100, 150, '#fdd835'),
