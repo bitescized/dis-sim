@@ -110,30 +110,14 @@ class Ion {
     ];
 
 function dissolve() {
-  if (dissolveCount >= maxDissolves) return;
-  dissolveCount++;
-
-  // Add 2 Na⁺
-  for (let i = 0; i < 2; i++) {
-    const ion = new Ion('Na⁺', Math.random() * (dissolvedCanvas.width - 40) + 20,
-                        Math.random() * (dissolvedCanvas.height - 40) + 20,
-                        '#fdd835');
+  dissolvedIons.forEach(ion => {
+    ion.x = Math.random() * (dissolvedCanvas.width - 40) + 20;
+    ion.y = Math.random() * (dissolvedCanvas.height - 40) + 20;
     ion.vx = Math.random() * 4 - 2;
     ion.vy = Math.random() * 4 - 2;
     ion.moving = true;
-    dissolvedIons.push(ion);
-  }
-
-  // Add 1 CO₃²⁻
-  const co3 = new Ion('CO₃²⁻', Math.random() * (dissolvedCanvas.width - 40) + 20,
-                      Math.random() * (dissolvedCanvas.height - 40) + 20,
-                      '#4db6ac');
-  co3.vx = Math.random() * 4 - 2;
-  co3.vy = Math.random() * 4 - 2;
-  co3.moving = true;
-  dissolvedIons.push(co3);
+  });
 }
-
 
 
     function animate() {
