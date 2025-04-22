@@ -1,71 +1,85 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Sodium Carbonate Dissolution</title>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js"></script>
-    <style>
-      body { margin: 0; padding: 0; }
-      canvas { display: block; }
-    </style>
-  </head>
-  <body>
-    <script>
-      let particles = [];
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sodium Carbonate Dissolution</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; background: #e0f7fa; }
+    canvas { background: white; border: 2px solid #0288d1; margin-top: 20px; }
+    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; background: #0288d1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Sodium Carbonate Dissolving in Water</h1>
+  <button onclick="dissolve()">Add to Water</button>
+  <canvas id="simCanvas" width="600" height="400"></canvas>
 
-      function setup() {
-        createCanvas(600, 400);
-        noStroke();
-        fill(255);
-        textSize(16);
+  <script>
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+
+    class Ion {
+      constructor(label, x, y, color) {
+        this.label = label;
+        this.x = x;
+        this.y = y;
+        this.vx = 0;
+        this.vy = 0;
+        this.color = color;
+        this.moving = false;
       }
 
-      function draw() {
-        background(200);
-        fill(0);
-        text("Click to add Na₂CO₃", 10, 20);
-
-        for (let p of particles) {
-          p.update();
-          p.display();
-        }
-      }
-
-      function mousePressed() {
-        // Add two Na⁺ ions
-        particles.push(new Ion('Na⁺', color(0, 0, 255)));
-        particles.push(new Ion('Na⁺', color(0, 0, 255)));
-        // Add one CO₃²⁻ ion
-        particles.push(new Ion('CO₃²⁻', color(255, 0, 0)));
-      }
-
-      class Ion {
-        constructor(label, col) {
-          this.x = random(width);
-          this.y = random(height);
-          this.vx = random(-1, 1);
-          this.vy = random(-1, 1);
-          this.label = label;
-          this.col = col;
-        }
-
-        update() {
+      update() {
+        if (this.moving) {
           this.x += this.vx;
           this.y += this.vy;
 
           // Bounce off walls
-          if (this.x < 0 || this.x > width) this.vx *= -1;
-          if (this.y < 0 || this.y > height) this.vy *= -1;
-        }
-
-        display() {
-          fill(this.col);
-          ellipse(this.x, this.y, 30, 30);
-          fill(255);
-          textAlign(CENTER, CENTER);
-          text(this.label, this.x, this.y);
+          if (this.x < 20 || this.x > canvas.width - 20) this.vx *= -1;
+          if (this.y < 20 || this.y > canvas.height - 20) this.vy *= -1;
         }
       }
-    </script>
-  </body>
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.strokeStyle = '#000';
+        ctx.stroke();
+        ctx.fillStyle = '#000';
+        ctx.font = '16px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(this.label, this.x, this.y + 5);
+      }
+    }
+
+    const ions = [
+      new Ion('Na⁺', 250, 180, '#fdd835'),
+      new Ion('Na⁺', 280, 180, '#fdd835'),
+      new Ion('CO₃²⁻', 265, 210, '#4db6ac')
+    ];
+
+    function dissolve() {
+      ions.forEach(ion => {
+        ion.vx = Math.random() * 4 - 2;
+        ion.vy = Math.random() * 4 - 2;
+        ion.moving = true;
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ions.forEach(ion => {
+        ion.update();
+        ion.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
 </html>
+
