@@ -176,21 +176,17 @@
       }
     }
 
-  function drawGlucoseMolecule(ctx, originX, originY) {
-  const scale = 0.6; // reduce spacing to bunch atoms closer
+function drawGlucoseMolecule(ctx, originX, originY) {
+  const scale = 0.6;
+
   const atoms = [
-    // Ring (C1–C5 and O)
-    { dx: 0, dy: 0, size: 10, color: 'gray' },
-    { dx: 30, dy: 0, size: 10, color: 'gray' },
-    { dx: 60, dy: 10, size: 10, color: 'gray' },
-    { dx: 60, dy: 40, size: 10, color: 'gray' },
-    { dx: 30, dy: 50, size: 10, color: 'gray' },
-    { dx: 0, dy: 40, size: 10, color: 'red' },
+    // First draw everything except carbon (so C appears on top)
+    // Ring oxygen
+    { dx: 0, dy: 40, size: 10, color: 'red' }, // O in ring
 
     // C6 tail
-    { dx: 30, dy: 75, size: 10, color: 'gray' },
-    { dx: 20, dy: 85, size: 6, color: 'white' },
-    { dx: 40, dy: 85, size: 10, color: 'red' },
+    { dx: 20, dy: 85, size: 6, color: 'white' }, // H on C6
+    { dx: 40, dy: 85, size: 10, color: 'red' },  // OH on C6
 
     // OH groups
     { dx: -10, dy: -10, size: 10, color: 'red' },
@@ -205,6 +201,14 @@
     { dx: 50, dy: 0, size: 6, color: 'white' },
     { dx: 50, dy: 50, size: 6, color: 'white' },
     { dx: 40, dy: 60, size: 6, color: 'white' },
+
+    // Now draw carbon atoms (C) so they appear on top
+    { dx: 0, dy: 0, size: 10, color: 'gray' },
+    { dx: 30, dy: 0, size: 10, color: 'gray' },
+    { dx: 60, dy: 10, size: 10, color: 'gray' },
+    { dx: 60, dy: 40, size: 10, color: 'gray' },
+    { dx: 30, dy: 50, size: 10, color: 'gray' },
+    { dx: 30, dy: 75, size: 10, color: 'gray' }, // C6
   ];
 
   atoms.forEach(atom => {
