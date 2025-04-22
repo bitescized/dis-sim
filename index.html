@@ -69,14 +69,12 @@
 
       draw(ctx) {
         if (this.label === 'CO₃²⁻') {
-          // Carbon
           ctx.beginPath();
           ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
           ctx.fillStyle = 'gray';
           ctx.fill();
           ctx.stroke();
 
-          // Oxygens
           const angleOffsets = [0, 120, 240].map(a => a * Math.PI / 180);
           angleOffsets.forEach(angle => {
             const ox = this.x + 15 * Math.cos(angle);
@@ -107,17 +105,34 @@
       }
     }
 
-    const solidIons = [
-      new Ion('Na⁺', 80, 130, '#fdd835'),
-      new Ion('Na⁺', 110, 130, '#fdd835'),
-      new Ion('CO₃²⁻', 95, 160, '#4db6ac'),
-      new Ion('Na⁺', 140, 130, '#fdd835'),
-      new Ion('Na⁺', 170, 130, '#fdd835'),
-      new Ion('CO₃²⁻', 155, 160, '#4db6ac')
-    ];
-
+    let solidIons = [];
     const dissolvedIons = [];
     let dissolved = false;
+
+    document.getElementById("compoundSelect").addEventListener("change", updateSolidDisplay);
+
+    function updateSolidDisplay() {
+      const compound = document.getElementById("compoundSelect").value;
+      solidIons = [];
+
+      if (compound === "Na2CO3") {
+        solidIons = [
+          new Ion('Na⁺', 80, 130, '#fdd835'),
+          new Ion('Na⁺', 110, 130, '#fdd835'),
+          new Ion('CO₃²⁻', 95, 160, '#4db6ac'),
+          new Ion('Na⁺', 140, 130, '#fdd835'),
+          new Ion('Na⁺', 170, 130, '#fdd835'),
+          new Ion('CO₃²⁻', 155, 160, '#4db6ac')
+        ];
+      } else if (compound === "NaCl") {
+        solidIons = [
+          new Ion('Na⁺', 90, 130, '#fdd835'),
+          new Ion('Cl⁻', 120, 130, '#90caf9'),
+          new Ion('Na⁺', 150, 130, '#fdd835'),
+          new Ion('Cl⁻', 180, 130, '#90caf9')
+        ];
+      }
+    }
 
     function addIon(label, color, speed) {
       const angle = Math.random() * 2 * Math.PI;
@@ -162,6 +177,7 @@
       requestAnimationFrame(animate);
     }
 
+    updateSolidDisplay(); // set initial compound view
     animate();
   </script>
 </body>
