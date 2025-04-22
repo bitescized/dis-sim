@@ -65,6 +65,8 @@
     <option value="NaCl">Sodium Chloride (NaCl)</option>
     <option value="CaCl2">Calcium Chloride (CaCl₂)</option>
     <option value="CaCO3">Calcium Carbonate (CaCO₃)</option>
+    <option value="MgSO4">Magnesium Sulfate (MgSO₄)</option>
+    <option value="MgCl2">Magnesium Chloride (MgCl₂)</option>
   </select>
   <button onclick="resetSimulation()">Reset</button>
 
@@ -137,6 +139,33 @@
           ctx.font = '12px sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText('CO₃²⁻', this.x, this.y + 40);
+
+        } else if (this.label === 'SO₄²⁻') {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+          ctx.fillStyle = 'yellow';
+          ctx.fill();
+          ctx.stroke();
+
+          const positions = [
+            { dx: 0, dy: -20 },
+            { dx: 20, dy: 0 },
+            { dx: 0, dy: 20 },
+            { dx: -20, dy: 0 }
+          ];
+          positions.forEach(pos => {
+            ctx.beginPath();
+            ctx.arc(this.x + pos.dx, this.y + pos.dy, 10, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.stroke();
+          });
+
+          ctx.fillStyle = '#000';
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('SO₄²⁻', this.x, this.y + 40);
+
         } else {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
@@ -218,6 +247,17 @@
           new Ion('Ca²⁺', 160, 130, '#a5d6a7'),
           new Ion('CO₃²⁻', 200, 150, '#4db6ac')
         ];
+      } else if (compound === "MgSO4") {
+        solidIons = [
+          new Ion('Mg²⁺', 75, 120, '#90caf9'),
+          new Ion('SO₄²⁻', 150, 150, 'yellow')
+        ];
+      } else if (compound === "MgCl2") {
+        solidIons = [
+          new Ion('Mg²⁺', 100, 110, '#90caf9'),
+          new Ion('Cl⁻', 70, 150, purple),
+          new Ion('Cl⁻', 130, 150, purple)
+        ];
       }
     }
 
@@ -256,6 +296,13 @@
       } else if (compound === "CaCO3") {
         for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
         for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+      } else if (compound === "MgSO4") {
+        addIon("Mg²⁺", '#90caf9', speed);
+        addIon("SO₄²⁻", 'yellow', speed);
+      } else if (compound === "MgCl2") {
+        addIon("Mg²⁺", '#90caf9', speed);
+        addIon("Cl⁻", purple, speed);
+        addIon("Cl⁻", purple, speed);
       }
     }
 
