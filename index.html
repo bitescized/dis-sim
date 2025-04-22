@@ -295,17 +295,23 @@ Dissociation with the right drawings?
           new Ion('CO₃²⁻', 200, 150, '#4db6ac')
         ];
       } else if (compound === "MgSO4") {
-        solidIons = [
-          new Ion('Mg²⁺', 75, 120, '#90caf9'),
-          new Ion('SO₄²⁻', 150, 150, 'yellow')
-        ];
-      } else if (compound === "MgCl2") {
-        solidIons = [
-          new Ion('Mg²⁺', 100, 110, '#90caf9'),
-          new Ion('Cl⁻', 70, 150, purple),
-          new Ion('Cl⁻', 130, 150, purple)
-        ];
-      }  else if (compound === "Glucose") {
+  solidIons = [
+    new Ion('Mg²⁺', 60, 110, '#90caf9'),
+    new Ion('SO₄²⁻', 90, 140, 'yellow'),
+    new Ion('Mg²⁺', 130, 110, '#90caf9'),
+    new Ion('SO₄²⁻', 160, 140, 'yellow')
+  ];
+} else if (compound === "MgCl2") {
+  solidIons = [
+    new Ion('Mg²⁺', 75, 120, '#90caf9'),
+    new Ion('Cl⁻', 50, 150, purple),
+    new Ion('Cl⁻', 100, 150, purple),
+    new Ion('Mg²⁺', 175, 120, '#90caf9'),
+    new Ion('Cl⁻', 150, 150, purple),
+    new Ion('Cl⁻', 200, 150, purple)
+  ];
+}
+  else if (compound === "Glucose") {
           solidIons = [
             { type: 'glucose', x: 30, y: 20 },
             { type: 'glucose', x: 100, y: 80 }
@@ -350,13 +356,12 @@ Dissociation with the right drawings?
         for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
         for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
       } else if (compound === "MgSO4") {
-        addIon("Mg²⁺", '#90caf9', speed);
-        addIon("SO₄²⁻", 'yellow', speed);
-      } else if (compound === "MgCl2") {
-        addIon("Mg²⁺", '#90caf9', speed);
-        addIon("Cl⁻", purple, speed);
-        addIon("Cl⁻", purple, speed);
-      }
+  for (let i = 0; i < 2; i++) addIon("Mg²⁺", '#90caf9', speed);
+  for (let i = 0; i < 2; i++) addIon("SO₄²⁻", 'yellow', speed);
+} else if (compound === "MgCl2") {
+  for (let i = 0; i < 2; i++) addIon("Mg²⁺", '#90caf9', speed);
+  for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+}
       else if (compound === "Glucose") {
         dissolvedIons = [
           { type: 'glucose', x: 60, y: 80, vx: 0.3, vy: 0.2 },
