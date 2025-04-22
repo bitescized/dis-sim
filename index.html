@@ -6,18 +6,32 @@
   <title>Sodium Carbonate Dissolution</title>
   <style>
     body { text-align: center; font-family: sans-serif; background: #e0f7fa; }
-    canvas { background: white; border: 2px solid #0288d1; margin-top: 20px; }
+    .container { display: flex; justify-content: space-around; }
+    .box { width: 250px; height: 300px; border: 2px solid #0288d1; background-color: #ffffff; margin: 20px; position: relative; }
+    canvas { background: white; }
     button { margin-top: 20px; padding: 10px 20px; font-size: 16px; background: #0288d1; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .label { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-weight: bold; }
   </style>
 </head>
 <body>
   <h1>Sodium Carbonate Dissolving in Water</h1>
   <button onclick="dissolve()">Add to Water</button>
-  <canvas id="simCanvas" width="600" height="400"></canvas>
+  <div class="container">
+    <div class="box">
+      <div class="label">Solid Sodium Carbonate</div>
+      <canvas id="solidBox" width="250" height="300"></canvas>
+    </div>
+    <div class="box">
+      <div class="label">Dissolved Ions in Solution</div>
+      <canvas id="dissolvedBox" width="250" height="300"></canvas>
+    </div>
+  </div>
 
   <script>
-    const canvas = document.getElementById('simCanvas');
-    const ctx = canvas.getContext('2d');
+    const solidCanvas = document.getElementById('solidBox');
+    const dissolvedCanvas = document.getElementById('dissolvedBox');
+    const solidCtx = solidCanvas.getContext('2d');
+    const dissolvedCtx = dissolvedCanvas.getContext('2d');
 
     class Ion {
       constructor(label, x, y, color) {
@@ -35,13 +49,12 @@
           this.x += this.vx;
           this.y += this.vy;
 
-          // Bounce off walls
-          if (this.x < 20 || this.x > canvas.width - 20) this.vx *= -1;
-          if (this.y < 20 || this.y > canvas.height - 20) this.vy *= -1;
+          if (this.x < 20 || this.x > dissolvedCanvas.width - 20) this.vx *= -1;
+          if (this.y < 20 || this.y > dissolvedCanvas.height - 20) this.vy *= -1;
         }
       }
 
-      draw() {
+      draw(ctx) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
@@ -55,14 +68,20 @@
       }
     }
 
-    const ions = [
-      new Ion('Na⁺', 250, 180, '#fdd835'),
-      new Ion('Na⁺', 280, 180, '#fdd835'),
-      new Ion('CO₃²⁻', 265, 210, '#4db6ac')
+    const solidIons = [
+      new Ion('Na⁺', 100, 150, '#fdd835'),
+      new Ion('Na⁺', 130, 150, '#fdd835'),
+      new Ion('CO₃²⁻', 115, 180, '#4db6ac')
+    ];
+
+    const dissolvedIons = [
+      new Ion('Na⁺', 0, 0, '#fdd835'),
+      new Ion('Na⁺', 0, 0, '#fdd835'),
+      new Ion('CO₃²⁻', 0, 0, '#4db6ac')
     ];
 
     function dissolve() {
-      ions.forEach(ion => {
+      dissolvedIons.forEach(ion => {
         ion.vx = Math.random() * 4 - 2;
         ion.vy = Math.random() * 4 - 2;
         ion.moving = true;
@@ -70,11 +89,15 @@
     }
 
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ions.forEach(ion => {
+      solidCtx.clearRect(0, 0, solidCanvas.width, solidCanvas.height);
+      dissolvedCtx.clearRect(0, 0, dissolvedCanvas.width, dissolvedCanvas.height);
+
+      solidIons.forEach(ion => ion.draw(solidCtx));
+      dissolvedIons.forEach(ion => {
         ion.update();
-        ion.draw();
+        ion.draw(dissolvedCtx);
       });
+
       requestAnimationFrame(animate);
     }
 
@@ -82,4 +105,5 @@
   </script>
 </body>
 </html>
+
 
