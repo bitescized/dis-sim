@@ -1,33 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Two Independent Ionic Simulations</title>
+  <title>Different Substances in Water</title>
   <style>
     body {
+      text-align: center;
       font-family: sans-serif;
       background: #000;
       color: white;
-      text-align: center;
-    }
-    .sim-row {
-      margin-bottom: 60px;
     }
     .container {
       display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 10px;
+      justify-content: space-around;
     }
     .box {
       width: 250px;
       height: 300px;
       border: 2px solid #0288d1;
       background-color: #ffffff;
+      margin: 20px;
+      position: relative;
       transition: opacity 0.8s ease, border-color 0.3s ease;
     }
-    .water-box {
+    #dissolvedBox {
       background: #b3e5fc;
     }
     canvas {
@@ -47,102 +44,57 @@
     }
     .label {
       font-weight: bold;
-      margin-top: 10px;
+      margin-bottom: 4px;
     }
     .highlight {
       border-color: #00c853 !important;
     }
+    .instructions {
+      font-style: italic;
+      margin-bottom: 10px;
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
+  <h1>Substance in Water</h1>
+  <p class="instructions">Drag the solid compound into the water box to dissolve it.</p>
 
-  <h1>Compare Two Ionic Dissolutions</h1>
+  <select id="compoundSelect">
+    <option value="Na2CO3">Sodium Carbonate (Na₂CO₃)</option>
+    <option value="NaCl">Sodium Chloride (NaCl)</option>
+    <option value="CaCl2">Calcium Chloride (CaCl₂)</option>
+    <option value="CaCO3">Calcium Carbonate (CaCO₃)</option>
+    <option value="MgSO4">Magnesium Sulfate (MgSO₄)</option>
+    <option value="MgCl2">Magnesium Chloride (MgCl₂)</option>
+    <option value="Na2SO4">Sodium Sulfate (Na₂SO₄)</option>
+  </select>
+  <button onclick="resetSimulation()">Reset</button>
 
-  <!-- Simulation 1 -->
-  <div class="sim-row" id="sim1">
-    <h2>Simulation 1</h2>
-    <select id="compoundSelect1"></select>
-    <button onclick="resetSimulation('1')">Reset</button>
-    <div class="container">
-      <div>
-        <div class="label">Solid</div>
-        <div class="box" id="solidBoxContainer1" draggable="true">
-          <canvas id="solidCanvas1" width="250" height="300"></canvas>
-        </div>
-      </div>
-      <div>
-        <div class="label">In Water</div>
-        <div class="box water-box" id="dissolvedBoxContainer1"
-             ondragover="event.preventDefault()"
-             ondragenter="this.classList.add('highlight')"
-             ondragleave="this.classList.remove('highlight')"
-             ondrop="handleDrop('1')">
-          <canvas id="dissolvedCanvas1" width="250" height="300"></canvas>
-        </div>
+  <div class="container">
+    <div>
+      <div class="label">Substance as Solid</div>
+      <div class="box" id="solidBoxContainer" draggable="true">
+        <canvas id="solidBox" width="250" height="300"></canvas>
       </div>
     </div>
-  </div>
-
-  <!-- Simulation 2 -->
-  <div class="sim-row" id="sim2">
-    <h2>Simulation 2</h2>
-    <select id="compoundSelect2"></select>
-    <button onclick="resetSimulation('2')">Reset</button>
-    <div class="container">
-      <div>
-        <div class="label">Solid</div>
-        <div class="box" id="solidBoxContainer2" draggable="true">
-          <canvas id="solidCanvas2" width="250" height="300"></canvas>
-        </div>
-      </div>
-      <div>
-        <div class="label">In Water</div>
-        <div class="box water-box" id="dissolvedBoxContainer2"
-             ondragover="event.preventDefault()"
-             ondragenter="this.classList.add('highlight')"
-             ondragleave="this.classList.remove('highlight')"
-             ondrop="handleDrop('2')">
-          <canvas id="dissolvedCanvas2" width="250" height="300"></canvas>
-        </div>
+    <div>
+      <div class="label">Substance in Water</div>
+      <div class="box" id="dissolvedBoxContainer"
+           ondragover="event.preventDefault()"
+           ondragenter="this.classList.add('highlight')"
+           ondragleave="this.classList.remove('highlight')"
+           ondrop="handleDrop(event)">
+        <canvas id="dissolvedBox" width="250" height="300"></canvas>
       </div>
     </div>
   </div>
 
   <script>
-    const compounds = {
-      Na2CO3: [
-        { type: 'solid', layout: [
-          ['Na⁺', 60, 100, '#66bb6a'], ['Na⁺', 90, 100, '#66bb6a'],
-          ['CO₃²⁻', 75, 130, '#4db6ac'], ['Na⁺', 130, 100, '#66bb6a'],
-          ['Na⁺', 160, 100, '#66bb6a'], ['CO₃²⁻', 145, 130, '#4db6ac']
-        ] },
-        { type: 'dissolved', ions: [
-          ['Na⁺', 4, '#66bb6a'], ['CO₃²⁻', 2, '#4db6ac']
-        ] }
-      ],
-      NaCl: [
-        { type: 'solid', layout: [
-          ['Na⁺', 60, 100, '#66bb6a'], ['Cl⁻', 90, 100, '#ab47bc'],
-          ['Na⁺', 120, 100, '#66bb6a'], ['Cl⁻', 150, 100, '#ab47bc'],
-          ['Na⁺', 60, 160, '#66bb6a'], ['Cl⁻', 90, 160, '#ab47bc'],
-          ['Na⁺', 120, 160, '#66bb6a'], ['Cl⁻', 150, 160, '#ab47bc']
-        ] },
-        { type: 'dissolved', ions: [
-          ['Na⁺', 4, '#66bb6a'], ['Cl⁻', 4, '#ab47bc']
-        ] }
-      ],
-      Na2SO4: [
-        { type: 'solid', layout: [
-          ['Na⁺', 60, 100, '#66bb6a'], ['Na⁺', 90, 100, '#66bb6a'],
-          ['SO₄²⁻', 75, 130, 'yellow'], ['Na⁺', 130, 100, '#66bb6a'],
-          ['Na⁺', 160, 100, '#66bb6a'], ['SO₄²⁻', 145, 130, 'yellow']
-        ] },
-        { type: 'dissolved', ions: [
-          ['Na⁺', 4, '#66bb6a'], ['SO₄²⁻', 2, 'yellow']
-        ] }
-      ]
-      // Add more compounds as needed
-    };
+    const solidCanvas = document.getElementById('solidBox');
+    const dissolvedCanvas = document.getElementById('dissolvedBox');
+    const solidCtx = solidCanvas.getContext('2d');
+    const dissolvedCtx = dissolvedCanvas.getContext('2d');
 
     class Ion {
       constructor(label, x, y, color) {
@@ -155,12 +107,12 @@
         this.moving = false;
       }
 
-      update(canvas) {
+      update() {
         if (this.moving) {
           this.x += this.vx;
           this.y += this.vy;
-          if (this.x < 20 || this.x > canvas.width - 20) this.vx *= -1;
-          if (this.y < 20 || this.y > canvas.height - 20) this.vy *= -1;
+          if (this.x < 20 || this.x > dissolvedCanvas.width - 20) this.vx *= -1;
+          if (this.y < 20 || this.y > dissolvedCanvas.height - 20) this.vy *= -1;
         }
       }
 
@@ -169,129 +121,222 @@
           ctx.beginPath();
           ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
           ctx.fillStyle = 'gray';
-          ctx.fill(); ctx.stroke();
-          [0, 120, 240].forEach(angle => {
-            const rad = angle * Math.PI / 180;
-            const ox = this.x + 15 * Math.cos(rad);
-            const oy = this.y + 15 * Math.sin(rad);
+          ctx.fill();
+          ctx.stroke();
+          const angleOffsets = [0, 120, 240].map(a => a * Math.PI / 180);
+          angleOffsets.forEach(angle => {
+            const ox = this.x + 15 * Math.cos(angle);
+            const oy = this.y + 15 * Math.sin(angle);
             ctx.beginPath();
             ctx.arc(ox, oy, 10, 0, Math.PI * 2);
             ctx.fillStyle = 'red';
-            ctx.fill(); ctx.stroke();
+            ctx.fill();
+            ctx.stroke();
           });
+          ctx.fillStyle = '#000';
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('CO₃²⁻', this.x, this.y + 40);
         } else if (this.label === 'SO₄²⁻') {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
           ctx.fillStyle = 'yellow';
-          ctx.fill(); ctx.stroke();
-          [{dx:0,dy:-20}, {dx:20,dy:0}, {dx:0,dy:20}, {dx:-20,dy:0}].forEach(pos => {
+          ctx.fill();
+          ctx.stroke();
+          const positions = [
+            { dx: 0, dy: -20 },
+            { dx: 20, dy: 0 },
+            { dx: 0, dy: 20 },
+            { dx: -20, dy: 0 }
+          ];
+          positions.forEach(pos => {
             ctx.beginPath();
             ctx.arc(this.x + pos.dx, this.y + pos.dy, 10, 0, Math.PI * 2);
             ctx.fillStyle = 'red';
-            ctx.fill(); ctx.stroke();
+            ctx.fill();
+            ctx.stroke();
           });
+          ctx.fillStyle = '#000';
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('SO₄²⁻', this.x, this.y + 40);
         } else {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
           ctx.fillStyle = this.color;
-          ctx.fill(); ctx.stroke();
+          ctx.fill();
+          ctx.strokeStyle = '#000';
+          ctx.stroke();
+          ctx.fillStyle = '#000';
+          ctx.font = '16px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(this.label, this.x, this.y + 5);
         }
-        ctx.fillStyle = '#000';
-        ctx.font = '14px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(this.label, this.x, this.y + 5);
       }
     }
 
-    const simulations = {};
+    let solidIons = [];
+    let dissolvedIons = [];
+    let dissolved = false;
 
-    function setupSimulation(id) {
-      const select = document.getElementById(`compoundSelect${id}`);
-      for (const compound in compounds) {
-        const opt = document.createElement('option');
-        opt.value = compound;
-        opt.textContent = compound;
-        select.appendChild(opt);
+    document.getElementById("compoundSelect").addEventListener("change", () => {
+      resetSimulation();
+      updateSolidDisplay();
+    });
+
+    document.getElementById("solidBoxContainer").addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", "drop-allowed");
+    });
+
+    function handleDrop(event) {
+      event.preventDefault();
+      event.currentTarget.classList.remove("highlight");
+
+      if (!dissolved) {
+        dissolve();
+        document.getElementById("solidBoxContainer").style.opacity = "0.3";
       }
+    }
 
-      simulations[id] = {
-        solidCtx: document.getElementById(`solidCanvas${id}`).getContext('2d'),
-        dissolvedCtx: document.getElementById(`dissolvedCanvas${id}`).getContext('2d'),
-        dissolvedCanvas: document.getElementById(`dissolvedCanvas${id}`),
-        solidIons: [],
-        dissolvedIons: [],
-        dissolved: false,
-        selected: select.value
-      };
+    function updateSolidDisplay() {
+      const compound = document.getElementById("compoundSelect").value;
+      solidIons = [];
 
-      select.addEventListener("change", () => {
-        simulations[id].selected = select.value;
-        resetSimulation(id);
-        drawSolid(id);
+      const green = '#66bb6a';
+      const purple = '#ab47bc';
+
+      if (compound === "Na2CO3") {
+        solidIons = [
+          new Ion('Na⁺', 60, 100, green),
+          new Ion('Na⁺', 90, 100, green),
+          new Ion('CO₃²⁻', 75, 130, '#4db6ac'),
+          new Ion('Na⁺', 130, 100, green),
+          new Ion('Na⁺', 160, 100, green),
+          new Ion('CO₃²⁻', 145, 130, '#4db6ac')
+        ];
+      } else if (compound === "NaCl") {
+        solidIons = [
+          new Ion('Na⁺', 60, 100, green),
+          new Ion('Cl⁻', 90, 100, purple),
+          new Ion('Na⁺', 120, 100, green),
+          new Ion('Cl⁻', 150, 100, purple),
+          new Ion('Na⁺', 60, 160, green),
+          new Ion('Cl⁻', 90, 160, purple),
+          new Ion('Na⁺', 120, 160, green),
+          new Ion('Cl⁻', 150, 160, purple)
+        ];
+      } else if (compound === "CaCl2") {
+        solidIons = [
+          new Ion('Ca²⁺', 80, 100, '#a5d6a7'),
+          new Ion('Cl⁻', 50, 130, purple),
+          new Ion('Cl⁻', 110, 130, purple),
+          new Ion('Ca²⁺', 160, 100, '#a5d6a7'),
+          new Ion('Cl⁻', 130, 130, purple),
+          new Ion('Cl⁻', 190, 130, purple)
+        ];
+      } else if (compound === "CaCO3") {
+        solidIons = [
+          new Ion('Ca²⁺', 80, 110, '#a5d6a7'),
+          new Ion('CO₃²⁻', 120, 130, '#4db6ac'),
+          new Ion('Ca²⁺', 160, 110, '#a5d6a7'),
+          new Ion('CO₃²⁻', 200, 130, '#4db6ac')
+        ];
+      } else if (compound === "MgSO4") {
+        solidIons = [
+          new Ion('Mg²⁺', 60, 110, '#90caf9'),
+          new Ion('SO₄²⁻', 100, 130, 'yellow'),
+          new Ion('Mg²⁺', 140, 110, '#90caf9'),
+          new Ion('SO₄²⁻', 180, 130, 'yellow')
+        ];
+      } else if (compound === "MgCl2") {
+        solidIons = [
+          new Ion('Mg²⁺', 80, 110, '#90caf9'),
+          new Ion('Cl⁻', 50, 140, purple),
+          new Ion('Cl⁻', 110, 140, purple),
+          new Ion('Mg²⁺', 160, 110, '#90caf9'),
+          new Ion('Cl⁻', 130, 140, purple),
+          new Ion('Cl⁻', 190, 140, purple)
+        ];
+      } else if (compound === "Na2SO4") {
+        solidIons = [
+          new Ion('Na⁺', 60, 100, green),
+          new Ion('Na⁺', 90, 100, green),
+          new Ion('SO₄²⁻', 75, 130, 'yellow'),
+          new Ion('Na⁺', 130, 100, green),
+          new Ion('Na⁺', 160, 100, green),
+          new Ion('SO₄²⁻', 145, 130, 'yellow')
+        ];
+      }
+    }
+
+    function addIon(label, color, speed) {
+      const angle = Math.random() * 2 * Math.PI;
+      const ion = new Ion(
+        label,
+        Math.random() * (dissolvedCanvas.width - 40) + 20,
+        Math.random() * (dissolvedCanvas.height - 40) + 20,
+        color
+      );
+      ion.vx = Math.cos(angle) * speed;
+      ion.vy = Math.sin(angle) * speed;
+      ion.moving = true;
+      dissolvedIons.push(ion);
+    }
+
+    function dissolve() {
+      if (dissolved) return;
+      dissolved = true;
+
+      const speed = 0.5;
+      const green = '#66bb6a';
+      const purple = '#ab47bc';
+      const compound = document.getElementById("compoundSelect").value;
+
+      if (compound === "Na2CO3") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+      } else if (compound === "NaCl") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+      } else if (compound === "CaCl2") {
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+      } else if (compound === "CaCO3") {
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+      } else if (compound === "MgSO4") {
+        for (let i = 0; i < 2; i++) addIon("Mg²⁺", '#90caf9', speed);
+        for (let i = 0; i < 2; i++) addIon("SO₄²⁻", 'yellow', speed);
+      } else if (compound === "MgCl2") {
+        for (let i = 0; i < 2; i++) addIon("Mg²⁺", '#90caf9', speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+      } else if (compound === "Na2SO4") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 2; i++) addIon("SO₄²⁻", 'yellow', speed);
+      }
+    }
+
+    function resetSimulation() {
+      dissolved = false;
+      dissolvedIons = [];
+      document.getElementById("solidBoxContainer").style.opacity = "1";
+    }
+
+    function animate() {
+      solidCtx.clearRect(0, 0, solidCanvas.width, solidCanvas.height);
+      dissolvedCtx.clearRect(0, 0, dissolvedCanvas.width, dissolvedCanvas.height);
+
+      solidIons.forEach(ion => ion.draw(solidCtx));
+      dissolvedIons.forEach(ion => {
+        ion.update();
+        ion.draw(dissolvedCtx);
       });
 
-      document.getElementById(`solidBoxContainer${id}`).addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", "drop-allowed");
-      });
-
-      drawSolid(id);
-      animate(id);
+      requestAnimationFrame(animate);
     }
 
-    function drawSolid(id) {
-      const sim = simulations[id];
-      const layout = compounds[sim.selected][0].layout;
-      sim.solidIons = layout.map(([label, x, y, color]) => new Ion(label, x, y, color));
-    }
-
-    function dissolve(id) {
-      const sim = simulations[id];
-      if (sim.dissolved) return;
-      sim.dissolved = true;
-      const ions = compounds[sim.selected][1].ions;
-      ions.forEach(([label, count, color]) => {
-        for (let i = 0; i < count; i++) {
-          const angle = Math.random() * 2 * Math.PI;
-          const ion = new Ion(label,
-            Math.random() * 210 + 20,
-            Math.random() * 260 + 20,
-            color
-          );
-          ion.vx = Math.cos(angle) * 0.5;
-          ion.vy = Math.sin(angle) * 0.5;
-          ion.moving = true;
-          sim.dissolvedIons.push(ion);
-        }
-      });
-    }
-
-    function handleDrop(id) {
-      document.getElementById(`solidBoxContainer${id}`).style.opacity = 0.3;
-      dissolve(id);
-    }
-
-    function resetSimulation(id) {
-      const sim = simulations[id];
-      sim.dissolved = false;
-      sim.dissolvedIons = [];
-      document.getElementById(`solidBoxContainer${id}`).style.opacity = 1;
-      drawSolid(id);
-    }
-
-    function animate(id) {
-      const sim = simulations[id];
-      sim.solidCtx.clearRect(0, 0, 250, 300);
-      sim.dissolvedCtx.clearRect(0, 0, 250, 300);
-      sim.solidIons.forEach(ion => ion.draw(sim.solidCtx));
-      sim.dissolvedIons.forEach(ion => {
-        ion.update(sim.dissolvedCanvas);
-        ion.draw(sim.dissolvedCtx);
-      });
-      requestAnimationFrame(() => animate(id));
-    }
-
-    setupSimulation("1");
-    setupSimulation("2");
+    updateSolidDisplay();
+    animate();
   </script>
 </body>
 </html>
