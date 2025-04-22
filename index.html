@@ -97,11 +97,16 @@ class Ion {
 }
 
 
-    const solidIons = [
-      new Ion('Na⁺', 100, 150, '#fdd835'),
-      new Ion('Na⁺', 130, 150, '#fdd835'),
-      new Ion('CO₃²⁻', 115, 180, '#4db6ac')
-    ];
+const solidIons = [
+  new Ion('Na⁺', 80, 130, '#fdd835'),
+  new Ion('Na⁺', 110, 130, '#fdd835'),
+  new Ion('CO₃²⁻', 95, 160, '#4db6ac'),
+
+  new Ion('Na⁺', 140, 130, '#fdd835'),
+  new Ion('Na⁺', 170, 130, '#fdd835'),
+  new Ion('CO₃²⁻', 155, 160, '#4db6ac')
+];
+
 
     const dissolvedIons = [
       new Ion('Na⁺', 0, 0, '#fdd835'),
@@ -110,19 +115,39 @@ class Ion {
     ];
 
 function dissolve() {
-  const speed = 0.5; // consistent speed for all ions
+  const speed = 0.5;
 
-  dissolvedIons.forEach(ion => {
-    ion.x = Math.random() * (dissolvedCanvas.width - 40) + 20;
-    ion.y = Math.random() * (dissolvedCanvas.height - 40) + 20;
-
+  // 4 Na⁺
+  for (let i = 0; i < 4; i++) {
     const angle = Math.random() * 2 * Math.PI;
+    const ion = new Ion(
+      'Na⁺',
+      Math.random() * (dissolvedCanvas.width - 40) + 20,
+      Math.random() * (dissolvedCanvas.height - 40) + 20,
+      '#fdd835'
+    );
     ion.vx = Math.cos(angle) * speed;
     ion.vy = Math.sin(angle) * speed;
-
     ion.moving = true;
-  });
+    dissolvedIons.push(ion);
+  }
+
+  // 2 CO₃²⁻
+  for (let i = 0; i < 2; i++) {
+    const angle = Math.random() * 2 * Math.PI;
+    const ion = new Ion(
+      'CO₃²⁻',
+      Math.random() * (dissolvedCanvas.width - 40) + 20,
+      Math.random() * (dissolvedCanvas.height - 40) + 20,
+      '#4db6ac'
+    );
+    ion.vx = Math.cos(angle) * speed;
+    ion.vy = Math.sin(angle) * speed;
+    ion.moving = true;
+    dissolvedIons.push(ion);
+  }
 }
+
 
 
 
