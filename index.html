@@ -110,14 +110,20 @@ class Ion {
     ];
 
 function dissolve() {
+  const speed = 0.5; // consistent speed for all ions
+
   dissolvedIons.forEach(ion => {
     ion.x = Math.random() * (dissolvedCanvas.width - 40) + 20;
     ion.y = Math.random() * (dissolvedCanvas.height - 40) + 20;
-    ion.vx = Math.random() * 4 - 2;
-    ion.vy = Math.random() * 4 - 2;
+
+    const angle = Math.random() * 2 * Math.PI;
+    ion.vx = Math.cos(angle) * speed;
+    ion.vy = Math.sin(angle) * speed;
+
     ion.moving = true;
   });
 }
+
 
 
     function animate() {
