@@ -107,9 +107,13 @@ const solidIons = [
   new Ion('CO₃²⁻', 155, 160, '#4db6ac')
 ];
 
+const dissolvedIons = []; // start empty
+let dissolved = false;
 
-
+    
 function dissolve() {
+    if (dissolved) return;
+  dissolved = true;
   const speed = 0.5;
 
   // 4 Na⁺
