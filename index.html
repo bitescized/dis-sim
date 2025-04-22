@@ -1,22 +1,83 @@
-<select id="compoundSelect">
-  <option value="Na2CO3">Sodium Carbonate (Na₂CO₃)</option>
-  <option value="NaCl">Sodium Chloride (NaCl)</option>
-  <option value="CaCl2">Calcium Chloride (CaCl₂)</option>
-  <option value="CaCO3">Calcium Carbonate (CaCO₃)</option>
-  <option value="MgSO4">Magnesium Sulfate (MgSO₄)</option>
-  <option value="MgCl2">Magnesium Chloride (MgCl₂)</option>
-  <option value="Glucose">Glucose (C₆H₁₂O₆)</option>
-</select>
+Dissociation with the right drawings?
 
-<script>
-// ADD THIS FUNCTION EXACTLY ONCE
-function drawGlucoseMolecule(ctx, originX, originY) {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Different Substances in Water</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: sans-serif;
+      background: #000;
+      color: white;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+    }
+    .box {
+      width: 250px;
+      height: 300px;
+      border: 2px solid #0288d1;
+      background-color: #ffffff;
+      margin: 20px;
+      position: relative;
+      transition: opacity 0.8s ease, border-color 0.3s ease;
+    }
+    #dissolvedBox {
+      background: #b3e5fc;
+    }
+    canvas {
+      background: white;
+    }
+    select, button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background: #0288d1;
+      color: white;
+      cursor: pointer;
+    }
+    .label {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .highlight {
+      border-color: #00c853 !important;
+    }
+    .instructions {
+      font-style: italic;
+      margin-bottom: 10px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Substance in Water</h1>
+  <p class="instructions">Drag the solid compound into the water box to dissolve it.</p>
+
+  <select id="compoundSelect">
+    <option value="Na2CO3">Sodium Carbonate (Na₂CO₃)</option>
+    <option value="NaCl">Sodium Chloride (NaCl)</option>
+    <option value="CaCl2">Calcium Chloride (CaCl₂)</option>
+    <option value="CaCO3">Calcium Carbonate (CaCO₃)</option>
+    <option value="MgSO4">Magnesium Sulfate (MgSO₄)</option>
+    <option value="MgCl2">Magnesium Chloride (MgCl₂)</option>
+    <option value="Glucose">Glucose (C₆H₁₂O₆)</option>
+
+    function drawGlucoseMolecule(ctx, originX, originY) {
   const scale = 0.6;
 
-  const backOxygens = [
-    { dx: -10, dy: -10, size: 10, color: 'red' },
-    { dx: 40, dy: -10, size: 10, color: 'red' },
-    { dx: 20, dy: 60, size: 10, color: 'red' }
+  const backOxygens = [ // drawn first
+    { dx: -10, dy: -10, size: 10, color: 'red' }, // OH on C1
+    { dx: 40, dy: -10, size: 10, color: 'red' },  // OH on C2
+    { dx: 20, dy: 60, size: 10, color: 'red' }    // OH on C5
   ];
 
   const hydrogens = [
@@ -28,22 +89,23 @@ function drawGlucoseMolecule(ctx, originX, originY) {
     { dx: 20, dy: 85, size: 6, color: 'white' }
   ];
 
-  const carbons = [
+  const carbons = [ // drawn after background O
     { dx: 0, dy: 0, size: 10, color: 'gray' },
     { dx: 30, dy: 0, size: 10, color: 'gray' },
     { dx: 60, dy: 10, size: 10, color: 'gray' },
     { dx: 60, dy: 40, size: 10, color: 'gray' },
     { dx: 30, dy: 50, size: 10, color: 'gray' },
-    { dx: 30, dy: 75, size: 10, color: 'gray' }
+    { dx: 30, dy: 75, size: 10, color: 'gray' } // C6
   ];
 
-  const frontOxygens = [
-    { dx: 70, dy: 0, size: 10, color: 'red' },
-    { dx: 70, dy: 50, size: 10, color: 'red' },
-    { dx: 40, dy: 85, size: 10, color: 'red' },
-    { dx: 0, dy: 40, size: 10, color: 'red' }
+  const frontOxygens = [ // drawn last
+    { dx: 70, dy: 0, size: 10, color: 'red' },  // OH on C3
+    { dx: 70, dy: 50, size: 10, color: 'red' }, // OH on C4
+    { dx: 40, dy: 85, size: 10, color: 'red' }, // OH on C6
+    { dx: 0, dy: 40, size: 10, color: 'red' }   // Ring oxygen
   ];
 
+  // Draw in order: back O → H → C → front O
   [...backOxygens, ...hydrogens, ...carbons, ...frontOxygens].forEach(atom => {
     ctx.beginPath();
     ctx.arc(originX + atom.dx * scale, originY + atom.dy * scale, atom.size, 0, Math.PI * 2);
@@ -53,41 +115,295 @@ function drawGlucoseMolecule(ctx, originX, originY) {
   });
 }
 
-// INSIDE updateSolidDisplay()
-else if (compound === "Glucose") {
-  solidIons = [
-    { type: 'glucose', x: 30, y: 20 },
-    { type: 'glucose', x: 100, y: 80 }
-  ];
-}
+  </select>
+  <button onclick="resetSimulation()">Reset</button>
 
-// INSIDE dissolve()
-else if (compound === "Glucose") {
-  dissolvedIons = [
-    { type: 'glucose', x: 60, y: 80, vx: 0.3, vy: 0.2 },
-    { type: 'glucose', x: 130, y: 160, vx: -0.2, vy: 0.3 }
-  ];
-}
+  <div class="container">
+    <div style="text-align: center;">
+      <div class="label">Substance as Solid</div>
+      <div class="box" id="solidBoxContainer" draggable="true">
+        <canvas id="solidBox" width="250" height="300"></canvas>
+      </div>
+    </div>
 
-// INSIDE animate()
-dissolvedIons.forEach(ion => {
-  if (ion instanceof Ion) {
-    ion.update();
-    ion.draw(dissolvedCtx);
-  } else if (ion.type === 'glucose') {
-    ion.x += ion.vx;
-    ion.y += ion.vy;
-    if (ion.x < -10 || ion.x > dissolvedCanvas.width - 60) ion.vx *= -1;
-    if (ion.y < -10 || ion.y > dissolvedCanvas.height - 60) ion.vy *= -1;
-    drawGlucoseMolecule(dissolvedCtx, ion.x, ion.y);
-  }
-});
+    <div style="text-align: center;">
+      <div class="label">Substance in Water</div>
+      <div class="box" id="dissolvedBoxContainer"
+           ondragover="event.preventDefault()"
+           ondragenter="this.classList.add('highlight')"
+           ondragleave="this.classList.remove('highlight')"
+           ondrop="handleDrop(event)">
+        <canvas id="dissolvedBox" width="250" height="300"></canvas>
+      </div>
+    </div>
+  </div>
 
-solidIons.forEach(ion => {
-  if (ion instanceof Ion) {
-    ion.draw(solidCtx);
-  } else if (ion.type === 'glucose') {
-    drawGlucoseMolecule(solidCtx, ion.x, ion.y);
-  }
-});
-</script>
+  <script>
+    const solidCanvas = document.getElementById('solidBox');
+    const dissolvedCanvas = document.getElementById('dissolvedBox');
+    const solidCtx = solidCanvas.getContext('2d');
+    const dissolvedCtx = dissolvedCanvas.getContext('2d');
+
+    class Ion {
+      constructor(label, x, y, color) {
+        this.label = label;
+        this.x = x;
+        this.y = y;
+        this.vx = 0;
+        this.vy = 0;
+        this.color = color;
+        this.moving = false;
+      }
+
+      update() {
+        if (this.moving) {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 20 || this.x > dissolvedCanvas.width - 20) this.vx *= -1;
+          if (this.y < 20 || this.y > dissolvedCanvas.height - 20) this.vy *= -1;
+        }
+      }
+
+      draw(ctx) {
+        if (this.label === 'CO₃²⁻') {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+          ctx.fillStyle = 'gray';
+          ctx.fill();
+          ctx.stroke();
+
+          const angleOffsets = [0, 120, 240].map(a => a * Math.PI / 180);
+          angleOffsets.forEach(angle => {
+            const ox = this.x + 15 * Math.cos(angle);
+            const oy = this.y + 15 * Math.sin(angle);
+            ctx.beginPath();
+            ctx.arc(ox, oy, 10, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.stroke();
+          });
+
+          ctx.fillStyle = '#000';
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('CO₃²⁻', this.x, this.y + 40);
+
+        } else if (this.label === 'SO₄²⁻') {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+          ctx.fillStyle = 'yellow';
+          ctx.fill();
+          ctx.stroke();
+
+          const positions = [
+            { dx: 0, dy: -20 },
+            { dx: 20, dy: 0 },
+            { dx: 0, dy: 20 },
+            { dx: -20, dy: 0 }
+          ];
+          positions.forEach(pos => {
+            ctx.beginPath();
+            ctx.arc(this.x + pos.dx, this.y + pos.dy, 10, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.stroke();
+          });
+
+          ctx.fillStyle = '#000';
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('SO₄²⁻', this.x, this.y + 40);
+
+        } else {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.strokeStyle = '#000';
+          ctx.stroke();
+          ctx.fillStyle = '#000';
+          ctx.font = '16px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(this.label, this.x, this.y + 5);
+        }
+      }
+    }
+
+    let solidIons = [];
+    let dissolvedIons = [];
+    let dissolved = false;
+
+    document.getElementById("compoundSelect").addEventListener("change", () => {
+      resetSimulation();
+      updateSolidDisplay();
+    });
+
+    document.getElementById("solidBoxContainer").addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", "drop-allowed");
+    });
+
+    function handleDrop(event) {
+      event.preventDefault();
+      event.currentTarget.classList.remove("highlight");
+
+      if (!dissolved) {
+        dissolve();
+        document.getElementById("solidBoxContainer").style.opacity = "0.3";
+      }
+    }
+
+    function updateSolidDisplay() {
+      const compound = document.getElementById("compoundSelect").value;
+      solidIons = [];
+
+      const green = '#66bb6a';
+      const purple = '#ab47bc';
+
+      if (compound === "Na2CO3") {
+        solidIons = [
+          new Ion('Na⁺', 60, 110, green),
+          new Ion('Na⁺', 90, 110, green),
+          new Ion('CO₃²⁻', 75, 140, '#4db6ac'),
+          new Ion('Na⁺', 130, 110, green),
+          new Ion('Na⁺', 160, 110, green),
+          new Ion('CO₃²⁻', 145, 140, '#4db6ac')
+        ];
+      } else if (compound === "NaCl") {
+        solidIons = [
+          new Ion('Na⁺', 70, 110, green),
+          new Ion('Cl⁻', 100, 110, purple),
+          new Ion('Na⁺', 130, 110, green),
+          new Ion('Cl⁻', 160, 110, purple),
+          new Ion('Na⁺', 70, 160, green),
+          new Ion('Cl⁻', 100, 160, purple),
+          new Ion('Na⁺', 130, 160, green),
+          new Ion('Cl⁻', 160, 160, purple)
+        ];
+      } else if (compound === "CaCl2") {
+        solidIons = [
+          new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
+          new Ion('Cl⁻', 70, 140, purple),
+          new Ion('Cl⁻', 130, 140, purple),
+          new Ion('Ca²⁺', 100, 180, '#a5d6a7'),
+          new Ion('Cl⁻', 70, 210, purple),
+          new Ion('Cl⁻', 130, 210, purple)
+        ];
+      } else if (compound === "CaCO3") {
+        solidIons = [
+          new Ion('Ca²⁺', 80, 130, '#a5d6a7'),
+          new Ion('CO₃²⁻', 120, 150, '#4db6ac'),
+          new Ion('Ca²⁺', 160, 130, '#a5d6a7'),
+          new Ion('CO₃²⁻', 200, 150, '#4db6ac')
+        ];
+      } else if (compound === "MgSO4") {
+        solidIons = [
+          new Ion('Mg²⁺', 75, 120, '#90caf9'),
+          new Ion('SO₄²⁻', 150, 150, 'yellow')
+        ];
+      } else if (compound === "MgCl2") {
+        solidIons = [
+          new Ion('Mg²⁺', 100, 110, '#90caf9'),
+          new Ion('Cl⁻', 70, 150, purple),
+          new Ion('Cl⁻', 130, 150, purple)
+        ];
+      }  else if (compound === "Glucose") {
+          solidIons = [
+            { type: 'glucose', x: 30, y: 20 },
+            { type: 'glucose', x: 100, y: 80 }
+          ];  
+      }
+    }
+    
+    
+    function addIon(label, color, speed) {
+      const angle = Math.random() * 2 * Math.PI;
+      const ion = new Ion(
+        label,
+        Math.random() * (dissolvedCanvas.width - 40) + 20,
+        Math.random() * (dissolvedCanvas.height - 40) + 20,
+        color
+      );
+      ion.vx = Math.cos(angle) * speed;
+      ion.vy = Math.sin(angle) * speed;
+      ion.moving = true;
+      dissolvedIons.push(ion);
+    }
+
+    function dissolve() {
+      if (dissolved) return;
+      dissolved = true;
+
+      const speed = 0.5;
+      const green = '#66bb6a';
+      const purple = '#ab47bc';
+      const compound = document.getElementById("compoundSelect").value;
+
+      if (compound === "Na2CO3") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+      } else if (compound === "NaCl") {
+        for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+      } else if (compound === "CaCl2") {
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
+        for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+      } else if (compound === "CaCO3") {
+        for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
+        for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+      } else if (compound === "MgSO4") {
+        addIon("Mg²⁺", '#90caf9', speed);
+        addIon("SO₄²⁻", 'yellow', speed);
+      } else if (compound === "MgCl2") {
+        addIon("Mg²⁺", '#90caf9', speed);
+        addIon("Cl⁻", purple, speed);
+        addIon("Cl⁻", purple, speed);
+      }
+      else if (compound === "Glucose") {
+        dissolvedIons = [
+          { type: 'glucose', x: 60, y: 80, vx: 0.3, vy: 0.2 },
+          { type: 'glucose', x: 130, y: 160, vx: -0.2, vy: 0.3 }
+        ];
+      }
+    }
+
+    function resetSimulation() {
+      dissolved = false;
+      dissolvedIons = [];
+      document.getElementById("solidBoxContainer").style.opacity = "1";
+    }
+
+    function animate() {
+      solidCtx.clearRect(0, 0, solidCanvas.width, solidCanvas.height);
+      dissolvedCtx.clearRect(0, 0, dissolvedCanvas.width, dissolvedCanvas.height);
+    
+      // Draw solid ions
+      solidIons.forEach(ion => {
+        if (ion instanceof Ion) {
+          ion.draw(solidCtx);
+        } else if (ion.type === 'glucose') {
+          drawGlucoseMolecule(solidCtx, ion.x, ion.y);
+        }
+      });
+    
+      // Draw dissolved ions and glucose
+      dissolvedIons.forEach(ion => {
+        if (ion instanceof Ion) {
+          ion.update();
+          ion.draw(dissolvedCtx);
+        } else if (ion.type === 'glucose') {
+          ion.x += ion.vx;
+          ion.y += ion.vy;
+          if (ion.x < -10 || ion.x > dissolvedCanvas.width - 60) ion.vx *= -1;
+          if (ion.y < -10 || ion.y > dissolvedCanvas.height - 60) ion.vy *= -1;
+          drawGlucoseMolecule(dissolvedCtx, ion.x, ion.y);
+        }
+      });
+    
+      requestAnimationFrame(animate);
+    }
+
+    updateSolidDisplay();
+    animate();
+  </script>
+</body>
+</html>
