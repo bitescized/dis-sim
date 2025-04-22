@@ -27,12 +27,10 @@
     button {
       background: #0288d1; color: white; cursor: pointer;
     }
-    .label {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-weight: bold;
+.label {
+  font-weight: bold;
+  margin-bottom: 4px;
+
     }
     .highlight {
       border-color: #00c853 !important;
@@ -49,23 +47,26 @@
   </select>
   <button onclick="resetSimulation()">Reset</button>
 
-  <div class="container">
-    <!-- Drag this -->
+<div class="container">
+  <div style="text-align: center;">
+    <div class="label">Solid Compound</div>
     <div class="box" id="solidBoxContainer" draggable="true">
-      <div class="label">Solid Compound</div>
       <canvas id="solidBox" width="250" height="300"></canvas>
     </div>
+  </div>
 
-    <!-- Drop here -->
+  <div style="text-align: center;">
+    <div class="label">Dissolved Ions</div>
     <div class="box" id="dissolvedBoxContainer"
          ondragover="event.preventDefault()"
          ondragenter="this.classList.add('highlight')"
          ondragleave="this.classList.remove('highlight')"
          ondrop="handleDrop(event)">
-      <div class="label">Dissolved Ions</div>
       <canvas id="dissolvedBox" width="250" height="300"></canvas>
     </div>
   </div>
+</div>
+
 
   <script>
     const solidCanvas = document.getElementById('solidBox');
