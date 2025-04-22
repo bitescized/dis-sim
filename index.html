@@ -278,21 +278,29 @@ function updateSolidDisplay() {
       dissolvedIons.push(ion);
     }
 
-    function dissolve() {
-      if (dissolved) return;
-      dissolved = true;
+function dissolve() {
+  if (dissolved) return;
+  dissolved = true;
 
-      const compound = document.getElementById("compoundSelect").value;
+  const compound = document.getElementById("compoundSelect").value;
 
-} else if (compound === "Glucose") {
-  dissolvedIons = [
-    { type: 'glucose', x: 60, y: 80, vx: 0.3, vy: 0.2 },
-    { type: 'glucose', x: 130, y: 160, vx: -0.2, vy: 0.3 }
-  ];
+  const speed = 0.5;
+  const green = '#66bb6a';
+  const purple = '#ab47bc';
+
+  if (compound === "Na2CO3") {
+    for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
+    for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+  } else if (compound === "Glucose") {
+    dissolvedIons = [
+      { type: 'glucose', x: 60, y: 80, vx: 0.3, vy: 0.2 },
+      { type: 'glucose', x: 130, y: 160, vx: -0.2, vy: 0.3 }
+    ];
+  }
+
+  // Add logic for other compounds here...
 }
 
-      // Add other compound logic here as before...
-    }
 
     function resetSimulation() {
       dissolved = false;
