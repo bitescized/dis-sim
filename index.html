@@ -76,6 +76,8 @@
   <option value="MgO">Magnesium Oxide (MgO)</option>
   <option value="KHCO3">Potassium Bicarbonate (KHCO₃)</option>
   <option value="KCl">Potassium Chloride (KCl)</option>
+  <option value="NaHCO3">Sodium Bicarbonate (NaHCO₃)</option>
+
 
 </select>
 
@@ -321,7 +323,15 @@
           new Ion('Na⁺', 130, 160, green),
           new Ion('Cl⁻', 160, 160, purple)
         ];
-      } else if (compound === "CaCl2") {
+      } else if (compound === "NaHCO3") {
+  solidIons = [
+    new Ion('Na⁺', 80, 120, '#66bb6a'),         // green for sodium
+    new Ion('HCO₃⁻', 120, 140, '#81d4fa'),
+    new Ion('Na⁺', 160, 120, '#66bb6a'),
+    new Ion('HCO₃⁻', 200, 140, '#81d4fa')
+  ];
+}
+} else if (compound === "CaCl2") {
         solidIons = [
           new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
           new Ion('Cl⁻', 70, 140, purple),
@@ -416,7 +426,11 @@
       } else if (compound === "NaCl") {
         for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
         for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
-      } else if (compound === "CaCl2") {
+      } else if (compound === "NaHCO3") {
+  for (let i = 0; i < 2; i++) addIon("Na⁺", '#66bb6a', speed);
+  for (let i = 0; i < 2; i++) addIon("HCO₃⁻", '#81d4fa', speed);
+}
+} else if (compound === "CaCl2") {
         for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
         for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
       } else if (compound === "CaCO3") {
