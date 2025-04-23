@@ -73,6 +73,10 @@
   <option value="MgSO4">Magnesium Sulfate (MgSO₄)</option>
   <option value="MgCl2">Magnesium Chloride (MgCl₂)</option>
   <option value="Glucose">Glucose (C₆H₁₂O₆)</option>
+  <option value="MgO">Magnesium Oxide (MgO)</option>
+  <option value="KHCO3">Potassium Bicarbonate (KHCO₃)</option>
+  <option value="KCl">Potassium Chloride (KCl)</option>
+
 </select>
 
   <button onclick="resetSimulation()">Reset</button>
@@ -321,6 +325,29 @@
           ];  
       }
     }
+    else if (compound === "MgO") {
+  solidIons = [
+    new Ion('Mg²⁺', 80, 120, '#90caf9'),
+    new Ion('O²⁻', 120, 140, 'orange'),
+    new Ion('Mg²⁺', 160, 120, '#90caf9'),
+    new Ion('O²⁻', 200, 140, 'orange')
+  ];
+} else if (compound === "KHCO3") {
+  solidIons = [
+    new Ion('K⁺', 80, 120, '#ffd54f'),
+    new Ion('HCO₃⁻', 120, 140, '#81d4fa'),
+    new Ion('K⁺', 160, 120, '#ffd54f'),
+    new Ion('HCO₃⁻', 200, 140, '#81d4fa')
+  ];
+} else if (compound === "KCl") {
+  solidIons = [
+    new Ion('K⁺', 90, 120, '#ffd54f'),
+    new Ion('Cl⁻', 130, 140, purple),
+    new Ion('K⁺', 170, 120, '#ffd54f'),
+    new Ion('Cl⁻', 210, 140, purple)
+  ];
+}
+
     
     
     function addIon(label, color, speed) {
@@ -364,6 +391,16 @@
 } else if (compound === "MgCl2") {
   for (let i = 0; i < 2; i++) addIon("Mg²⁺", '#90caf9', speed);
   for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
+}
+        else if (compound === "MgO") {
+  for (let i = 0; i < 2; i++) addIon("Mg²⁺", '#90caf9', speed);
+  for (let i = 0; i < 2; i++) addIon("O²⁻", 'orange', speed);
+} else if (compound === "KHCO3") {
+  for (let i = 0; i < 2; i++) addIon("K⁺", '#ffd54f', speed);
+  for (let i = 0; i < 2; i++) addIon("HCO₃⁻", '#81d4fa', speed);
+} else if (compound === "KCl") {
+  for (let i = 0; i < 2; i++) addIon("K⁺", '#ffd54f', speed);
+  for (let i = 0; i < 2; i++) addIon("Cl⁻", purple, speed);
 }
       else if (compound === "Glucose") {
         dissolvedIons = [
