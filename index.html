@@ -151,7 +151,43 @@
           ctx.textAlign = 'center';
           ctx.fillText('CO₃²⁻', this.x, this.y + 40);
 
-        } else if (this.label === 'SO₄²⁻') {
+        } else if (this.label === 'HCO₃⁻') {
+  // Central carbon
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+  ctx.fillStyle = 'gray'; // Carbon
+  ctx.fill();
+  ctx.stroke();
+
+  // Three oxygen atoms (red), arranged like in CO₃
+  const angleOffsets = [0, 120, 240].map(a => a * Math.PI / 180);
+  angleOffsets.forEach((angle, index) => {
+    const ox = this.x + 15 * Math.cos(angle);
+    const oy = this.y + 15 * Math.sin(angle);
+    ctx.beginPath();
+    ctx.arc(ox, oy, 10, 0, Math.PI * 2);
+    ctx.fillStyle = 'red'; // Oxygen
+    ctx.fill();
+    ctx.stroke();
+
+    // Add hydrogen (white) to one oxygen
+    if (index === 0) {
+      const hx = ox + 12 * Math.cos(angle);
+      const hy = oy + 12 * Math.sin(angle);
+      ctx.beginPath();
+      ctx.arc(hx, hy, 6, 0, Math.PI * 2);
+      ctx.fillStyle = 'white'; // Hydrogen
+      ctx.fill();
+      ctx.stroke();
+    }
+  });
+
+  // Label
+  ctx.fillStyle = '#000';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('HCO₃⁻', this.x, this.y + 40);
+} else if (this.label === 'SO₄²⁻') {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
           ctx.fillStyle = 'yellow';
