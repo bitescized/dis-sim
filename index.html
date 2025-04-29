@@ -78,6 +78,8 @@
   <option value="KCl">Potassium Chloride (KCl)</option>
   <option value="NaHCO3">Sodium Bicarbonate (NaHCO₃)</option>
   <option value="Citrate">Citrate (C₆H₅O₇³⁻)</option>
+  <option value="Na3Citrate">Sodium Citrate (Na₃C₆H₅O₇)</option>
+
 
 
 
@@ -353,6 +355,13 @@
           new Ion('Na⁺', 130, 160, green),
           new Ion('Cl⁻', 160, 160, purple)
         ];
+        } else if (compound === "Na3Citrate") {
+  solidIons = [
+    new Ion('Na⁺', 60, 120, '#66bb6a'),
+    new Ion('Na⁺', 100, 120, '#66bb6a'),
+    new Ion('Na⁺', 140, 120, '#66bb6a'),
+    new Ion('Citrate³⁻', 100, 160, '#aed581')
+  ];
       } else if (compound === "NaHCO3") {
   solidIons = [
     new Ion('Na⁺', 80, 120, '#66bb6a'),         // green for sodium
@@ -459,6 +468,9 @@
       if (compound === "Na2CO3") {
         for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
         for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
+      } else if (compound === "Na3Citrate") {
+  for (let i = 0; i < 3; i++) addIon("Na⁺", '#66bb6a', speed);
+  addIon("Citrate³⁻", '#aed581', speed);
       } else if (compound === "NaCl") {
         for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
         for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
