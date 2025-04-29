@@ -77,6 +77,8 @@
   <option value="KHCO3">Potassium Bicarbonate (KHCO₃)</option>
   <option value="KCl">Potassium Chloride (KCl)</option>
   <option value="NaHCO3">Sodium Bicarbonate (NaHCO₃)</option>
+  <option value="Citrate">Citrate (C₆H₅O₇³⁻)</option>
+
 
 
 </select>
@@ -214,6 +216,34 @@
           ctx.font = '12px sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText('SO₄²⁻', this.x, this.y + 40);
+
+          } else if (this.label === 'Citrate³⁻') {
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, 8, 0, Math.PI * 2); // central carbon
+  ctx.fillStyle = 'gray';
+  ctx.fill();
+  ctx.stroke();
+
+  const offsets = [
+    { dx: -20, dy: -15 },
+    { dx: 20, dy: -15 },
+    { dx: -25, dy: 15 },
+    { dx: 25, dy: 15 },
+    { dx: 0, dy: 25 }
+  ];
+  offsets.forEach(pos => {
+    ctx.beginPath();
+    ctx.arc(this.x + pos.dx, this.y + pos.dy, 10, 0, Math.PI * 2);
+    ctx.fillStyle = 'red'; // oxygens
+    ctx.fill();
+    ctx.stroke();
+  });
+
+  ctx.fillStyle = '#000';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Citrate³⁻', this.x, this.y + 40);
+}
 
         } else {
           ctx.beginPath();
@@ -354,6 +384,12 @@
     new Ion('Mg²⁺', 130, 110, '#90caf9'),
     new Ion('SO₄²⁻', 160, 140, 'yellow')
   ];
+        } else if (compound === "Citrate") {
+  solidIons = [
+    new Ion('Citrate³⁻', 120, 140, '#aed581') // olive green or similar
+  ];
+}
+
 } else if (compound === "MgCl2") {
   solidIons = [
     new Ion('Mg²⁺', 75, 120, '#90caf9'),
@@ -429,6 +465,9 @@
       } else if (compound === "NaHCO3") {
   for (let i = 0; i < 2; i++) addIon("Na⁺", '#66bb6a', speed);
   for (let i = 0; i < 2; i++) addIon("HCO₃⁻", '#81d4fa', speed);
+} else if (compound === "Citrate") {
+  addIon("Citrate³⁻", '#aed581', speed);
+}
 
 } else if (compound === "CaCl2") {
         for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
