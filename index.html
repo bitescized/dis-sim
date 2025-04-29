@@ -1,3 +1,5 @@
+DISSOCIATION WITH CountQueuingStrategy
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,9 +79,7 @@
   <option value="KHCO3">Potassium Bicarbonate (KHCO₃)</option>
   <option value="KCl">Potassium Chloride (KCl)</option>
   <option value="NaHCO3">Sodium Bicarbonate (NaHCO₃)</option>
-  <option value="Citrate">Citrate (C₆H₅O₇³⁻)</option>
   <option value="Na3Citrate">Sodium Citrate (Na₃C₆H₅O₇)</option>
-
 
 
 
@@ -193,6 +193,75 @@
   ctx.font = '12px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('HCO₃⁻', this.x, this.y + 40);
+} else if (this.label === 'Citrate³⁻') {
+  const carbonColor = 'gray';
+  const oxygenColor = 'red';
+
+  // Central carbon
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+  ctx.fillStyle = carbonColor;
+  ctx.fill();
+  ctx.stroke();
+
+  const carboxylates = [
+    { dx: -30, dy: -30 },
+    { dx: 30, dy: -30 },
+    { dx: -30, dy: 30 }
+  ];
+  carboxylates.forEach(pos => {
+    // Carboxyl carbon
+    ctx.beginPath();
+    ctx.arc(this.x + pos.dx, this.y + pos.dy, 8, 0, Math.PI * 2);
+    ctx.fillStyle = carbonColor;
+    ctx.fill();
+    ctx.stroke();
+
+    // Oxygens
+    ctx.beginPath();
+    ctx.arc(this.x + pos.dx + 15, this.y + pos.dy, 10, 0, Math.PI * 2);
+    ctx.fillStyle = oxygenColor;
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(this.x + pos.dx - 15, this.y + pos.dy, 10, 0, Math.PI * 2);
+    ctx.fillStyle = oxygenColor;
+    ctx.fill();
+    ctx.stroke();
+  });
+
+  // Hydroxyl group
+  ctx.beginPath();
+  ctx.arc(this.x + 0, this.y + 30, 6, 0, Math.PI * 2);
+  ctx.fillStyle = oxygenColor;
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(this.x + 10, this.y + 40, 4, 0, Math.PI * 2);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  ctx.stroke();
+
+  // Label
+  ctx.fillStyle = '#000';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 55);
+} else {
+  // Generic ion fallback
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+  ctx.fillStyle = this.color;
+  ctx.fill();
+  ctx.strokeStyle = '#000';
+  ctx.stroke();
+  ctx.fillStyle = '#000';
+  ctx.font = '16px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(this.label, this.x, this.y + 5);
+}
 } else if (this.label === 'SO₄²⁻') {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
@@ -218,34 +287,6 @@
           ctx.font = '12px sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText('SO₄²⁻', this.x, this.y + 40);
-
-          } else if (this.label === 'Citrate³⁻') {
-  ctx.beginPath();
-  ctx.arc(this.x, this.y, 8, 0, Math.PI * 2); // central carbon
-  ctx.fillStyle = 'gray';
-  ctx.fill();
-  ctx.stroke();
-
-  const offsets = [
-    { dx: -20, dy: -15 },
-    { dx: 20, dy: -15 },
-    { dx: -25, dy: 15 },
-    { dx: 25, dy: 15 },
-    { dx: 0, dy: 25 }
-  ];
-  offsets.forEach(pos => {
-    ctx.beginPath();
-    ctx.arc(this.x + pos.dx, this.y + pos.dy, 10, 0, Math.PI * 2);
-    ctx.fillStyle = 'red'; // oxygens
-    ctx.fill();
-    ctx.stroke();
-  });
-
-  ctx.fillStyle = '#000';
-  ctx.font = '12px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Citrate³⁻', this.x, this.y + 40);
-}
 
         } else {
           ctx.beginPath();
@@ -344,33 +385,32 @@
           new Ion('Na⁺', 160, 110, green),
           new Ion('CO₃²⁻', 145, 140, '#4db6ac')
         ];
-     } else if (compound === "NaCl") {
+      } else if (compound === "Na3Citrate") {
+        solidIons = [
+          new Ion('Na⁺', 60, 120, '#66bb6a'),
+          new Ion('Na⁺', 100, 120, '#66bb6a'),
+          new Ion('Na⁺', 140, 120, '#66bb6a'),
+          new Ion('Citrate³⁻', 100, 160, '#aed581')
+        ];
+      } else if (compound === "NaCl") {
+        solidIons = [
+          new Ion('Na⁺', 70, 110, green),
+          new Ion('Cl⁻', 100, 110, purple),
+          new Ion('Na⁺', 130, 110, green),
+          new Ion('Cl⁻', 160, 110, purple),
+          new Ion('Na⁺', 70, 160, green),
+          new Ion('Cl⁻', 100, 160, purple),
+          new Ion('Na⁺', 130, 160, green),
+          new Ion('Cl⁻', 160, 160, purple)
+        ];
+      } else if (compound === "NaHCO3") {
   solidIons = [
-    new Ion('Na⁺', 70, 110, green),
-    new Ion('Cl⁻', 100, 110, purple),
-    new Ion('Na⁺', 130, 110, green),
-    new Ion('Cl⁻', 160, 110, purple),
-    new Ion('Na⁺', 70, 160, green),
-    new Ion('Cl⁻', 100, 160, purple),
-    new Ion('Na⁺', 130, 160, green),
-    new Ion('Cl⁻', 160, 160, purple)
-  ];
-
-} else if (compound === "Na3Citrate") {
-  solidIons = [
-    new Ion('Na⁺', 60, 120, '#66bb6a'),
-    new Ion('Na⁺', 100, 120, '#66bb6a'),
-    new Ion('Na⁺', 140, 120, '#66bb6a'),
-    new Ion('Citrate³⁻', 100, 160, '#aed581')
-  ];
-
-} else if (compound === "NaHCO3") {
-  solidIons = [
-    new Ion('Na⁺', 80, 120, '#66bb6a'),
+    new Ion('Na⁺', 80, 120, '#66bb6a'),         // green for sodium
     new Ion('HCO₃⁻', 120, 140, '#81d4fa'),
     new Ion('Na⁺', 160, 120, '#66bb6a'),
     new Ion('HCO₃⁻', 200, 140, '#81d4fa')
   ];
+
 } else if (compound === "CaCl2") {
         solidIons = [
           new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
@@ -394,11 +434,7 @@
     new Ion('Mg²⁺', 130, 110, '#90caf9'),
     new Ion('SO₄²⁻', 160, 140, 'yellow')
   ];
-        } else if (compound === "Citrate") {
-  solidIons = [
-    new Ion('Citrate³⁻', 120, 140, '#aed581') // olive green or similar
-  ];
-      } else if (compound === "MgCl2") {
+} else if (compound === "MgCl2") {
   solidIons = [
     new Ion('Mg²⁺', 75, 120, '#90caf9'),
     new Ion('Cl⁻', 50, 150, purple),
@@ -468,17 +504,14 @@
         for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
         for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
       } else if (compound === "Na3Citrate") {
-  for (let i = 0; i < 3; i++) addIon("Na⁺", '#66bb6a', speed);
-  addIon("Citrate³⁻", '#aed581', speed);
+        for (let i = 0; i < 3; i++) addIon("Na⁺", '#66bb6a', speed);
+        addIon("Citrate³⁻", '#aed581', speed);      
       } else if (compound === "NaCl") {
         for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
         for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
       } else if (compound === "NaHCO3") {
   for (let i = 0; i < 2; i++) addIon("Na⁺", '#66bb6a', speed);
   for (let i = 0; i < 2; i++) addIon("HCO₃⁻", '#81d4fa', speed);
-} else if (compound === "Citrate") {
-  addIon("Citrate³⁻", '#aed581', speed);
-}
 
 } else if (compound === "CaCl2") {
         for (let i = 0; i < 2; i++) addIon("Ca²⁺", '#a5d6a7', speed);
