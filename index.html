@@ -344,32 +344,33 @@
           new Ion('Na⁺', 160, 110, green),
           new Ion('CO₃²⁻', 145, 140, '#4db6ac')
         ];
-      } else if (compound === "NaCl") {
-        solidIons = [
-          new Ion('Na⁺', 70, 110, green),
-          new Ion('Cl⁻', 100, 110, purple),
-          new Ion('Na⁺', 130, 110, green),
-          new Ion('Cl⁻', 160, 110, purple),
-          new Ion('Na⁺', 70, 160, green),
-          new Ion('Cl⁻', 100, 160, purple),
-          new Ion('Na⁺', 130, 160, green),
-          new Ion('Cl⁻', 160, 160, purple)
-        ];
-        } else if (compound === "Na3Citrate") {
+     } else if (compound === "NaCl") {
+  solidIons = [
+    new Ion('Na⁺', 70, 110, green),
+    new Ion('Cl⁻', 100, 110, purple),
+    new Ion('Na⁺', 130, 110, green),
+    new Ion('Cl⁻', 160, 110, purple),
+    new Ion('Na⁺', 70, 160, green),
+    new Ion('Cl⁻', 100, 160, purple),
+    new Ion('Na⁺', 130, 160, green),
+    new Ion('Cl⁻', 160, 160, purple)
+  ];
+
+} else if (compound === "Na3Citrate") {
   solidIons = [
     new Ion('Na⁺', 60, 120, '#66bb6a'),
     new Ion('Na⁺', 100, 120, '#66bb6a'),
     new Ion('Na⁺', 140, 120, '#66bb6a'),
     new Ion('Citrate³⁻', 100, 160, '#aed581')
   ];
-      } else if (compound === "NaHCO3") {
+
+} else if (compound === "NaHCO3") {
   solidIons = [
-    new Ion('Na⁺', 80, 120, '#66bb6a'),         // green for sodium
+    new Ion('Na⁺', 80, 120, '#66bb6a'),
     new Ion('HCO₃⁻', 120, 140, '#81d4fa'),
     new Ion('Na⁺', 160, 120, '#66bb6a'),
     new Ion('HCO₃⁻', 200, 140, '#81d4fa')
   ];
-
 } else if (compound === "CaCl2") {
         solidIons = [
           new Ion('Ca²⁺', 100, 110, '#a5d6a7'),
