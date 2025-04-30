@@ -193,44 +193,50 @@ DISSOCIATION WITH CountQueuingStrategy
   ctx.font = '12px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('HCO₃⁻', this.x, this.y + 40);
-} else if (this.label === 'Citrate³⁻') {
+}  else if (this.label === 'Citrate³⁻') {
   const carbon = 'gray';
   const oxygen = 'red';
   const hydrogen = 'white';
-  const scale = 0.6; // adjust this to bunch them up more (e.g., 0.5 = tighter)
+  const scale = 0.5; // adjust for spacing
 
   const atoms = [
-    // Carbons
-    { dx: 0, dy: 0, color: carbon, size: 10 },       // C3 (central)
-    { dx: -40, dy: -30, color: carbon, size: 10 },   // C2
-    { dx: -80, dy: -50, color: oxygen, size: 10 },   // C2's -COO⁻ oxygen
-    { dx: -100, dy: -30, color: oxygen, size: 10 },  // C2's =O oxygen
+    // Carbon backbone: C1 → C2 → C3
+    { dx: 0, dy: 0, color: carbon },       // C1
+    { dx: 40, dy: 0, color: carbon },      // C2
+    { dx: 80, dy: 0, color: carbon },      // C3
 
-    { dx: -40, dy: 30, color: carbon, size: 10 },    // C4
-    { dx: -80, dy: 50, color: oxygen, size: 10 },    // C4's -COO⁻ oxygen
-    { dx: -100, dy: 30, color: oxygen, size: 10 },   // C4's =O oxygen
+    // Carboxyl group on C1
+    { dx: -30, dy: -30, color: carbon },   // C4 (carboxyl)
+    { dx: -50, dy: -50, color: oxygen },   // O⁻
+    { dx: -30, dy: -70, color: oxygen },   // =O
 
-    { dx: 40, dy: -30, color: carbon, size: 10 },    // C1
-    { dx: 80, dy: -50, color: oxygen, size: 10 },    // C1's -COO⁻ oxygen
-    { dx: 100, dy: -30, color: oxygen, size: 10 },   // C1's =O oxygen
+    // Carboxyl group on C2
+    { dx: 40, dy: -40, color: carbon },    // C5 (carboxyl)
+    { dx: 40, dy: -70, color: oxygen },    // =O
+    { dx: 60, dy: -40, color: oxygen },    // O⁻
 
-    { dx: 40, dy: 30, color: oxygen, size: 10 },     // C3's hydroxyl O
-    { dx: 55, dy: 45, color: hydrogen, size: 6 },    // H on hydroxyl
+    // Carboxyl group on C3
+    { dx: 110, dy: -30, color: carbon },   // C6 (carboxyl)
+    { dx: 130, dy: -50, color: oxygen },   // O⁻
+    { dx: 130, dy: -10, color: oxygen },   // =O
+
+    // Hydroxyl group on C2
+    { dx: 40, dy: 40, color: oxygen },     // OH O
+    { dx: 50, dy: 60, color: hydrogen },   // OH H
   ];
 
   atoms.forEach(atom => {
     ctx.beginPath();
-    ctx.arc(this.x + atom.dx * scale, this.y + atom.dy * scale, atom.size, 0, Math.PI * 2);
+    ctx.arc(this.x + atom.dx * scale, this.y + atom.dy * scale, atom.color === hydrogen ? 6 : 10, 0, Math.PI * 2);
     ctx.fillStyle = atom.color;
     ctx.fill();
     ctx.stroke();
   });
 
-  // Label
   ctx.fillStyle = '#000';
   ctx.font = '12px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 65 * scale);
+  ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 80 * scale);
 
 } else if (this.label === 'SO₄²⁻') {
           ctx.beginPath();
