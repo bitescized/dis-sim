@@ -1,4 +1,5 @@
-WORKING WITH CITRATE
+DISSOCIATION WITH CountQueuingStrategy
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,6 +81,8 @@ WORKING WITH CITRATE
   <option value="NaHCO3">Sodium Bicarbonate (NaHCO₃)</option>
   <option value="Na3Citrate">Sodium Citrate (Na₃C₆H₅O₇)</option>
 
+
+
 </select>
 
   <button onclick="resetSimulation()">Reset</button>
@@ -154,8 +157,7 @@ WORKING WITH CITRATE
           ctx.textAlign = 'center';
           ctx.fillText('CO₃²⁻', this.x, this.y + 40);
 
-        } 
-        else if (this.label === 'HCO₃⁻') {
+        } else if (this.label === 'HCO₃⁻') {
   // Central carbon
   ctx.beginPath();
   ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
@@ -191,6 +193,65 @@ WORKING WITH CITRATE
   ctx.font = '12px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('HCO₃⁻', this.x, this.y + 40);
+} else if (this.label === 'Citrate³⁻') {
+  const carbonColor = 'gray';
+  const oxygenColor = 'red';
+  const hydrogenColor = 'white';
+
+  // Central carbon
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, 10, 0, Math.PI * 2); // was 8
+  ctx.fillStyle = carbonColor;
+  ctx.fill();
+  ctx.stroke();
+
+  const carboxylates = [
+    { dx: -30, dy: -30 },
+    { dx: 30, dy: -30 },
+    { dx: -30, dy: 30 }
+  ];
+  carboxylates.forEach(pos => {
+    // Carboxyl carbon
+    ctx.beginPath();
+    ctx.arc(this.x + pos.dx, this.y + pos.dy, 10, 0, Math.PI * 2); // was 8
+    ctx.fillStyle = carbonColor;
+    ctx.fill();
+    ctx.stroke();
+
+    // Oxygens
+    ctx.beginPath();
+    ctx.arc(this.x + pos.dx + 15, this.y + pos.dy, 10, 0, Math.PI * 2);
+    ctx.fillStyle = oxygenColor;
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(this.x + pos.dx - 15, this.y + pos.dy, 10, 0, Math.PI * 2);
+    ctx.fillStyle = oxygenColor;
+    ctx.fill();
+    ctx.stroke();
+  });
+
+  // Hydroxyl oxygen
+  ctx.beginPath();
+  ctx.arc(this.x + 0, this.y + 30, 10, 0, Math.PI * 2); // was 6
+  ctx.fillStyle = oxygenColor;
+  ctx.fill();
+  ctx.stroke();
+
+  // Attached hydrogen
+  ctx.beginPath();
+  ctx.arc(this.x + 10, this.y + 40, 6, 0, Math.PI * 2); // was 4
+  ctx.fillStyle = hydrogenColor;
+  ctx.fill();
+  ctx.stroke();
+
+  // Label
+  ctx.fillStyle = '#000';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 55);
+
 } else if (this.label === 'SO₄²⁻') {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
@@ -217,64 +278,7 @@ WORKING WITH CITRATE
           ctx.textAlign = 'center';
           ctx.fillText('SO₄²⁻', this.x, this.y + 40);
 
-        } else if (this.label === 'Citrate³⁻') {
-          const carbonColor = 'gray';
-          const oxygenColor = 'red';
-        
-          // Central carbon
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
-          ctx.fillStyle = carbonColor;
-          ctx.fill();
-          ctx.stroke();
-        
-          const carboxylates = [
-            { dx: -30, dy: -30 },
-            { dx: 30, dy: -30 },
-            { dx: -30, dy: 30 }
-          ];
-          carboxylates.forEach(pos => {
-            // Carboxyl carbon
-            ctx.beginPath();
-            ctx.arc(this.x + pos.dx, this.y + pos.dy, 8, 0, Math.PI * 2);
-            ctx.fillStyle = carbonColor;
-            ctx.fill();
-            ctx.stroke();
-        
-            // Oxygens
-            ctx.beginPath();
-            ctx.arc(this.x + pos.dx + 15, this.y + pos.dy, 10, 0, Math.PI * 2);
-            ctx.fillStyle = oxygenColor;
-            ctx.fill();
-            ctx.stroke();
-        
-            ctx.beginPath();
-            ctx.arc(this.x + pos.dx - 15, this.y + pos.dy, 10, 0, Math.PI * 2);
-            ctx.fillStyle = oxygenColor;
-            ctx.fill();
-            ctx.stroke();
-          });
-        
-          // Hydroxyl group
-          ctx.beginPath();
-          ctx.arc(this.x + 0, this.y + 30, 6, 0, Math.PI * 2);
-          ctx.fillStyle = oxygenColor;
-          ctx.fill();
-          ctx.stroke();
-        
-          ctx.beginPath();
-          ctx.arc(this.x + 10, this.y + 40, 4, 0, Math.PI * 2);
-          ctx.fillStyle = 'white';
-          ctx.fill();
-          ctx.stroke();
-        
-          // Label
-          ctx.fillStyle = '#000';
-          ctx.font = '12px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 55);
-        } 
-        else {
+        } else {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
           ctx.fillStyle = this.color;
@@ -371,6 +375,13 @@ WORKING WITH CITRATE
           new Ion('Na⁺', 160, 110, green),
           new Ion('CO₃²⁻', 145, 140, '#4db6ac')
         ];
+      } else if (compound === "Na3Citrate") {
+        solidIons = [
+          new Ion('Na⁺', 60, 120, '#66bb6a'),
+          new Ion('Na⁺', 100, 120, '#66bb6a'),
+          new Ion('Na⁺', 140, 120, '#66bb6a'),
+          new Ion('Citrate³⁻', 100, 160, '#aed581')
+        ];
       } else if (compound === "NaCl") {
         solidIons = [
           new Ion('Na⁺', 70, 110, green),
@@ -382,13 +393,6 @@ WORKING WITH CITRATE
           new Ion('Na⁺', 130, 160, green),
           new Ion('Cl⁻', 160, 160, purple)
         ];
-       } else if (compound === "Na3Citrate") {
-          solidIons = [
-            new Ion('Na⁺', 60, 120, green),
-            new Ion('Na⁺', 100, 120, green),
-            new Ion('Na⁺', 140, 120, green),
-            new Ion('Citrate³⁻', 100, 160, '#aed581')
-          ];
       } else if (compound === "NaHCO3") {
   solidIons = [
     new Ion('Na⁺', 80, 120, '#66bb6a'),         // green for sodium
@@ -490,11 +494,9 @@ WORKING WITH CITRATE
         for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
         for (let i = 0; i < 2; i++) addIon("CO₃²⁻", '#4db6ac', speed);
       } else if (compound === "Na3Citrate") {
-        addIon("Na⁺", green, speed);
-        addIon("Na⁺", green, speed);
-        addIon("Na⁺", green, speed);
-        addIon("Citrate³⁻", '#aed581', speed);
-    } else if (compound === "NaCl") {
+        for (let i = 0; i < 3; i++) addIon("Na⁺", '#66bb6a', speed);
+        addIon("Citrate³⁻", '#aed581', speed);      
+      } else if (compound === "NaCl") {
         for (let i = 0; i < 4; i++) addIon("Na⁺", green, speed);
         for (let i = 0; i < 4; i++) addIon("Cl⁻", purple, speed);
       } else if (compound === "NaHCO3") {
