@@ -194,63 +194,36 @@ DISSOCIATION WITH CountQueuingStrategy
   ctx.textAlign = 'center';
   ctx.fillText('HCO₃⁻', this.x, this.y + 40);
 } else if (this.label === 'Citrate³⁻') {
-  const carbonColor = 'gray';
-  const oxygenColor = 'red';
-  const hydrogenColor = 'white';
+  const carbon = 'gray';
+  const oxygen = 'red';
+  const hydrogen = 'white';
 
-  // Central carbon
-  ctx.beginPath();
-  ctx.arc(this.x, this.y, 10, 0, Math.PI * 2); // was 8
-  ctx.fillStyle = carbonColor;
-  ctx.fill();
-  ctx.stroke();
-
-  const carboxylates = [
-    { dx: -30, dy: -30 },
-    { dx: 30, dy: -30 },
-    { dx: -30, dy: 30 }
+  const atoms = [
+    { dx: 0, dy: 0, color: carbon, size: 10 },       // Central C (C3)
+    { dx: -40, dy: -30, color: carbon, size: 10 },   // C2
+    { dx: -80, dy: -40, color: oxygen, size: 10 },   // Carboxyl O
+    { dx: -40, dy: 30, color: carbon, size: 10 },    // C4
+    { dx: -80, dy: 40, color: oxygen, size: 10 },    // Carboxyl O
+    { dx: 40, dy: -30, color: carbon, size: 10 },    // C1
+    { dx: 80, dy: -40, color: oxygen, size: 10 },    // Carboxyl O
+    { dx: 40, dy: 30, color: oxygen, size: 10 },     // Hydroxyl O
+    { dx: 55, dy: 45, color: hydrogen, size: 6 },    // Hydroxyl H
   ];
-  carboxylates.forEach(pos => {
-    // Carboxyl carbon
-    ctx.beginPath();
-    ctx.arc(this.x + pos.dx, this.y + pos.dy, 10, 0, Math.PI * 2); // was 8
-    ctx.fillStyle = carbonColor;
-    ctx.fill();
-    ctx.stroke();
 
-    // Oxygens
+  atoms.forEach(atom => {
     ctx.beginPath();
-    ctx.arc(this.x + pos.dx + 15, this.y + pos.dy, 10, 0, Math.PI * 2);
-    ctx.fillStyle = oxygenColor;
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(this.x + pos.dx - 15, this.y + pos.dy, 10, 0, Math.PI * 2);
-    ctx.fillStyle = oxygenColor;
+    ctx.arc(this.x + atom.dx, this.y + atom.dy, atom.size, 0, Math.PI * 2);
+    ctx.fillStyle = atom.color;
     ctx.fill();
     ctx.stroke();
   });
-
-  // Hydroxyl oxygen
-  ctx.beginPath();
-  ctx.arc(this.x + 0, this.y + 30, 10, 0, Math.PI * 2); // was 6
-  ctx.fillStyle = oxygenColor;
-  ctx.fill();
-  ctx.stroke();
-
-  // Attached hydrogen
-  ctx.beginPath();
-  ctx.arc(this.x + 10, this.y + 40, 6, 0, Math.PI * 2); // was 4
-  ctx.fillStyle = hydrogenColor;
-  ctx.fill();
-  ctx.stroke();
 
   // Label
   ctx.fillStyle = '#000';
   ctx.font = '12px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 55);
+  ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 65);
+
 
 } else if (this.label === 'SO₄²⁻') {
           ctx.beginPath();
