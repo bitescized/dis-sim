@@ -1,3 +1,4 @@
+WORKING WITH CITRATE
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -217,15 +218,61 @@
           ctx.fillText('SO₄²⁻', this.x, this.y + 40);
 
         } else if (this.label === 'Citrate³⁻') {
+          const carbonColor = 'gray';
+          const oxygenColor = 'red';
+        
+          // Central carbon
           ctx.beginPath();
-          ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
-          ctx.fillStyle = '#aed581'; // greenish
+          ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+          ctx.fillStyle = carbonColor;
           ctx.fill();
           ctx.stroke();
+        
+          const carboxylates = [
+            { dx: -30, dy: -30 },
+            { dx: 30, dy: -30 },
+            { dx: -30, dy: 30 }
+          ];
+          carboxylates.forEach(pos => {
+            // Carboxyl carbon
+            ctx.beginPath();
+            ctx.arc(this.x + pos.dx, this.y + pos.dy, 8, 0, Math.PI * 2);
+            ctx.fillStyle = carbonColor;
+            ctx.fill();
+            ctx.stroke();
+        
+            // Oxygens
+            ctx.beginPath();
+            ctx.arc(this.x + pos.dx + 15, this.y + pos.dy, 10, 0, Math.PI * 2);
+            ctx.fillStyle = oxygenColor;
+            ctx.fill();
+            ctx.stroke();
+        
+            ctx.beginPath();
+            ctx.arc(this.x + pos.dx - 15, this.y + pos.dy, 10, 0, Math.PI * 2);
+            ctx.fillStyle = oxygenColor;
+            ctx.fill();
+            ctx.stroke();
+          });
+        
+          // Hydroxyl group
+          ctx.beginPath();
+          ctx.arc(this.x + 0, this.y + 30, 6, 0, Math.PI * 2);
+          ctx.fillStyle = oxygenColor;
+          ctx.fill();
+          ctx.stroke();
+        
+          ctx.beginPath();
+          ctx.arc(this.x + 10, this.y + 40, 4, 0, Math.PI * 2);
+          ctx.fillStyle = 'white';
+          ctx.fill();
+          ctx.stroke();
+        
+          // Label
           ctx.fillStyle = '#000';
           ctx.font = '12px sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText('Citrate³⁻', this.x, this.y + 25);
+          ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 55);
         } 
         else {
           ctx.beginPath();
