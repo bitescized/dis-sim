@@ -364,11 +364,20 @@
           new Ion('CO₃²⁻', 145, 140, '#4db6ac')
         ];
       } else if (compound === "Na3Citrate") {
+        const centerX = 125;
+        const centerY = 160;
+      
+        const radius = 40;
+        const angles = [0, 120, 240]; // degrees
+      
         solidIons = [
-          new Ion('Na⁺', 60, 120, '#66bb6a'),
-          new Ion('Na⁺', 100, 120, '#66bb6a'),
-          new Ion('Na⁺', 140, 120, '#66bb6a'),
-          new Ion('Citrate³⁻', 100, 160, '#aed581')
+          new Ion('Citrate³⁻', centerX, centerY, '#aed581'),
+          ...angles.map(angle => {
+            const rad = angle * Math.PI / 180;
+            const x = centerX + radius * Math.cos(rad);
+            const y = centerY + radius * Math.sin(rad);
+            return new Ion('Na⁺', x, y, '#66bb6a');
+          })
         ];
       } else if (compound === "NaCl") {
         solidIons = [
