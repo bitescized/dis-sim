@@ -194,47 +194,56 @@ DISSOCIATION WITH CountQueuingStrategy
   ctx.textAlign = 'center';
   ctx.fillText('HCO₃⁻', this.x, this.y + 40);
 }  else if (this.label === 'Citrate³⁻') {
-  const carbonColor = 'gray';
-  const oxygenColor = 'red';
-  const hydrogenColor = 'white';
+  const carbon = 'gray';
+  const oxygen = 'red';
+  const hydrogen = 'white';
+  const scale = 0.45;
 
-  // Atom positions (relative to center this.x, this.y)
   const atoms = [
-    { dx: 0, dy: 0, size: 10, color: carbonColor, type: 'C', layer: 2 },     // central carbon
-    { dx: -30, dy: -30, size: 10, color: carbonColor, type: 'C', layer: 1 },
-    { dx: 30, dy: -30, size: 10, color: carbonColor, type: 'C', layer: 1 },
-    { dx: -30, dy: 30, size: 10, color: carbonColor, type: 'C', layer: 1 },
-    { dx: 0, dy: 45, size: 10, color: carbonColor, type: 'C', layer: 2 },     // middle-front carbon
-    { dx: 20, dy: 65, size: 10, color: carbonColor, type: 'C', layer: 3 },    // frontmost carbon
-    { dx: 40, dy: 45, size: 10, color: oxygenColor, type: 'O', layer: 2 },    // random oxygen
-    { dx: -15, dy: 60, size: 10, color: oxygenColor, type: 'O', layer: 1 },   // oxygen behind
-    { dx: 0, dy: 75, size: 6, color: hydrogenColor, type: 'H', layer: 3 },    // visible H
-    { dx: -45, dy: -30, size: 10, color: oxygenColor, type: 'O', layer: 1 },
-    { dx: -15, dy: -30, size: 10, color: oxygenColor, type: 'O', layer: 1 },
-    { dx: 15, dy: -30, size: 10, color: oxygenColor, type: 'O', layer: 2 },
-    { dx: 45, dy: -30, size: 10, color: oxygenColor, type: 'O', layer: 2 },
-    { dx: -45, dy: 30, size: 10, color: oxygenColor, type: 'O', layer: 1 },
-    { dx: -15, dy: 30, size: 10, color: oxygenColor, type: 'O', layer: 1 },
+    // Backbone: C1 - C2 - C3
+    { dx: -10, dy: 20, color: hydrogen },  // H on C1
+    // { dx: 0, dy: 0, color: carbon },       // C1
+    { dx: 40, dy: 0, color: carbon },      // C2
+    { dx: 80, dy: 0, color: carbon },      // C3
+
+    // Carboxyl on C1
+    { dx: -25, dy: -30, color: carbon },   // C4
+    { dx: -45, dy: -45, color: oxygen },   // O⁻
+    { dx: -25, dy: -60, color: oxygen },   // =O
+
+    // Carboxyl on C2
+    { dx: 20, dy: -60, color: oxygen },    // =O
+    { dx: 60, dy: -60, color: oxygen },    // O⁻
+    { dx: 40, dy: -40, color: carbon },    // C5
+
+    // Carboxyl on C3
+
+    { dx: 125, dy: -50, color: oxygen },   // O⁻
+    { dx: 105, dy: -30, color: carbon },   // C6
+    { dx: 125, dy: -10, color: oxygen },   // =O
+
+    // Hydroxyl on C2
+    { dx: 40, dy: 30, color: oxygen },     // OH oxygen
+    { dx: 50, dy: 45, color: hydrogen },   // OH hydrogen
+
+    // Hydrogens on C1 and C3 (2 each)
+    { dx: 10, dy: 20, color: hydrogen },   // H on C1
+    { dx: 70, dy: 20, color: hydrogen },   // H on C3
+    { dx: 90, dy: 20, color: hydrogen },   // H on C3
   ];
 
-  // Draw by layer (1 = back, 3 = front)
-  [1, 2, 3].forEach(layer => {
-    atoms
-      .filter(atom => atom.layer === layer)
-      .forEach(atom => {
-        ctx.beginPath();
-        ctx.arc(this.x + atom.dx, this.y + atom.dy, atom.size, 0, Math.PI * 2);
-        ctx.fillStyle = atom.color;
-        ctx.fill();
-        ctx.stroke();
-      });
+  atoms.forEach(atom => {
+    ctx.beginPath();
+    ctx.arc(this.x + atom.dx * scale, this.y + atom.dy * scale, atom.color === hydrogen ? 6 : 10, 0, Math.PI * 2);
+    ctx.fillStyle = atom.color;
+    ctx.fill();
+    ctx.stroke();
   });
 
-  // Label
   ctx.fillStyle = '#000';
   ctx.font = '12px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 90);
+  ctx.fillText('C₆H₅O₇³⁻', this.x, this.y + 80 * scale);
 
 } else if (this.label === 'SO₄²⁻') {
           ctx.beginPath();
