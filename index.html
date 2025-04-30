@@ -197,32 +197,38 @@ DISSOCIATION WITH CountQueuingStrategy
   const carbon = 'gray';
   const oxygen = 'red';
   const hydrogen = 'white';
-  const scale = 0.5; // adjust for spacing
+  const scale = 0.6;
 
   const atoms = [
-    // Carbon backbone: C1 → C2 → C3
+    // Backbone: C1 - C2 - C3
     { dx: 0, dy: 0, color: carbon },       // C1
     { dx: 40, dy: 0, color: carbon },      // C2
     { dx: 80, dy: 0, color: carbon },      // C3
 
-    // Carboxyl group on C1
-    { dx: -30, dy: -30, color: carbon },   // C4 (carboxyl)
-    { dx: -50, dy: -50, color: oxygen },   // O⁻
-    { dx: -30, dy: -70, color: oxygen },   // =O
+    // Carboxyl on C1
+    { dx: -25, dy: -30, color: carbon },   // C4
+    { dx: -45, dy: -45, color: oxygen },   // O⁻
+    { dx: -25, dy: -60, color: oxygen },   // =O
 
-    // Carboxyl group on C2
-    { dx: 40, dy: -40, color: carbon },    // C5 (carboxyl)
-    { dx: 40, dy: -70, color: oxygen },    // =O
-    { dx: 60, dy: -40, color: oxygen },    // O⁻
+    // Carboxyl on C2
+    { dx: 40, dy: -40, color: carbon },    // C5
+    { dx: 20, dy: -60, color: oxygen },    // =O
+    { dx: 60, dy: -60, color: oxygen },    // O⁻
 
-    // Carboxyl group on C3
-    { dx: 110, dy: -30, color: carbon },   // C6 (carboxyl)
-    { dx: 130, dy: -50, color: oxygen },   // O⁻
-    { dx: 130, dy: -10, color: oxygen },   // =O
+    // Carboxyl on C3
+    { dx: 105, dy: -30, color: carbon },   // C6
+    { dx: 125, dy: -50, color: oxygen },   // O⁻
+    { dx: 125, dy: -10, color: oxygen },   // =O
 
-    // Hydroxyl group on C2
-    { dx: 40, dy: 40, color: oxygen },     // OH O
-    { dx: 50, dy: 60, color: hydrogen },   // OH H
+    // Hydroxyl on C2
+    { dx: 40, dy: 30, color: oxygen },     // OH oxygen
+    { dx: 50, dy: 45, color: hydrogen },   // OH hydrogen
+
+    // Hydrogens on C1 and C3 (2 each)
+    { dx: -10, dy: 20, color: hydrogen },  // H on C1
+    { dx: 10, dy: 20, color: hydrogen },   // H on C1
+    { dx: 70, dy: 20, color: hydrogen },   // H on C3
+    { dx: 90, dy: 20, color: hydrogen },   // H on C3
   ];
 
   atoms.forEach(atom => {
