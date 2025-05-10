@@ -223,7 +223,7 @@
 
     // Hydrogens on C1 and C3 (2 each)
     { dx: 10, dy: 20, color: hydrogen },   // H on C1
-    { dx: 70, dy: 60, color: hydrogen },   // H on C3
+    { dx: 70, dy: 20, color: hydrogen },   // H on C3
     { dx: 90, dy: 20, color: hydrogen },   // H on C3
   ];
 
@@ -357,10 +357,10 @@
       if (compound === "Na2CO3") {
         solidIons = [
           new Ion('Na⁺', 60, 110, green),
-          new Ion('Na⁺', 90, 110, green),
+          new Ion('Na⁺', 90, 170, green),
           new Ion('CO₃²⁻', 75, 140, '#4db6ac'),
           new Ion('Na⁺', 130, 110, green),
-          new Ion('Na⁺', 160, 110, green),
+          new Ion('Na⁺', 160, 170, green),
           new Ion('CO₃²⁻', 145, 140, '#4db6ac')
         ];
       } else if (compound === "Na3Citrate") {
