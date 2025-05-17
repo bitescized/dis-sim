@@ -328,7 +328,16 @@
     { dx: 0, dy: 40, size: 10, color: 'red' }
   ];
 
-  [...backOxygens, ...hydrogens, ...carbons, ...frontOxygens].forEach(atom => {
+        const frontHydrogens = [
+    { dx: 70, dy: 0, size: 6, color: 'white' },
+    { dx: 70, dy: 50, size: 6, color: 'white' },
+    { dx: 40, dy: 85, size: 6, color: 'white' },
+    { dx: 0, dy: 40, size: 6, color: 'white' },
+    { dx: 10, dy: 10, size: 6, color: 'white' },
+    { dx: 20, dy: 85, size: 6, color: 'white' }
+  ];
+
+  [...backOxygens, ...hydrogens, ...carbons, ...frontOxygens, ...frontHydrogens].forEach(atom => {
     ctx.beginPath();
     ctx.arc(originX + atom.dx * scale, originY + atom.dy * scale, atom.size, 0, Math.PI * 2);
     ctx.fillStyle = atom.color;
